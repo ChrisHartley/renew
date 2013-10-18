@@ -1,0 +1,46 @@
+###To populate zoning table:
+insert into renew_zoning (zone, geometry) select label, geometry from zoning
+copy (SELECT name, ST_Union(geometry) as geometry 
+FROM renew_zoning 
+GROUP BY name) to '/tmp/zoning.sql'
+copy renew_zoning (name, geometry) from '/tmp/zoning.sql'
+
+
+###To populate zipcodes table:
+copy (select zcta5ce10, ST_transform(geom, 4326) as geom from zipcode where zcta5ce10 like '462%') to '/tmp/zipcode.sql'
+copy renew_zipcode (name, geometry) from '/tmp/zipcode.sql'
+
+###To populate CDC table:
+copy (select name, type, ST_transform(geom, 4326) as geom from cdc) to '/tmp/cdc.sql'
+copy renew_cdc (name, "CDCtype", geometry) from '/tmp/cdc.sql'
+
+###To see what cdc, zipcode, etc a property is in in prep to populate:
+select parcel, renew_zipcode.name, renew_cdc.name, renew_zoning from test_db, renew_zipcode, renew_cdc, renew_zoning where ST_Contains(renew_zipcode.geom, test_db.geom) and ST_Contains(renew_cdc.geom, test_db.geom) and ST_Contains(renew_zoning.geom, test_db.geom) limit 5
+
+
+#1) copy (select parcel, trim(both from regexp_replace(coalesce(stnumber,'') || ' ' || coalesce(pre_dir,'') || ' ' ||  coalesce(street_nam,'') || ' ' ||  coalesce(suffix,'') || ' ' ||  coalesce(suf_dir,''), '  ', ' ')) AS "streetAddress", ST_Transform(lb_parcels.geom, 4326) as geometry from lb_parcels left join parcels_20130530 on parcel = parcel_c where parcel_c is not null) to '/tmp/lb-query.sql'
+#2) copy lb_parcels (parcel, "streetAddress", geom) from '/tmp/lb-query.sql'
+
+delete duplicates (not needed if you group by on #1) <-- only removes exact duplicates parcel,address,etc
+#3) DELETE FROM lb_parcels
+WHERE parcel IN (SELECT parcel
+              FROM (SELECT parcel,
+                             row_number() over (partition BY parcel ORDER BY parcel) AS rnum
+                     FROM lb_parcels) t
+              WHERE t.rnum > 1);
+
+#4) insert into renew_property (parcel, "streetAddress", nsp, "structureType", "cdcArea_id", zipcode_id, zoned_id, geometry) (select lb_parcels.parcel, lb_parcels."streetAddress", null as nsp, '' as "structureType", renew_cdc.id, renew_zipcode.id, renew_zoning.id, geom from lb_parcels, renew_cdc, renew_zipcode, renew_zoning where ST_Contains(renew_cdc.geometry, lb_parcels.geom) AND ST_Contains(renew_zipcode.geometry, lb_parcels.geom) AND ST_Contains(renew_zoning.geometry, lb_parcels.geom)  
+
+#4 (new) insert into renew_property (parcel, "streetAddress", nsp, "structureType", area, geometry) (select lb_parcels.parcel, lb_parcels."streetAddress", null as nsp, '' as "structureType", ST_Area(ST_Transform(geom, 2965)) as area, geom from lb_parcels)
+
+#5.A update zipcode, cdc, zoning one at a time b/c some parcels are not in cdcs, etc
+update renew_property set zipcode_id = sq.id from (select renew_zipcode.id, renew_property.parcel from renew_zipcode, renew_property where ST_contains(renew_zipcode.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel
+update renew_property set zone_id = sq.id from (select renew_zoning.id, renew_property.parcel from renew_zoning, renew_property where ST_contains(renew_zoning.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel
+update renew_property set cdc_id = sq.id from (select renew_cdc.id, renew_property.parcel from renew_cdc, renew_property where ST_contains(renew_cdc.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel
+
+
+modules used
+pip install django-endless-pagination
+pip install django_tables
+
+

@@ -1,0 +1,33 @@
+<table class="paleblue">
+	<tr>
+		<th>Pacel Number</th>
+		<th>Street Address</th>
+		<th>Zipcode</th>
+		<th>Structure Type</th>
+		<th>CDC</th>
+		<th>Zoned</th>
+		<th>NSP</th>
+		<th>Area (sq ft)</th>
+	</tr>
+
+{% load endless %}
+{% paginate 25 table %}
+	{% for property in table %}
+	<tr>
+		<td>{{property.parcel}}</td>
+		<td>{{property.streetAddress}}</td>
+		<td>{{property.zipcode}}</td>
+		<td>{{property.structureType}}</td>
+		<td>{{property.cdc}}</td>
+		<td>{{property.zone}}</td>
+		<td>{{property.nsp}}</td>
+		<td>{{property.area}}</td>
+	</tr>
+	{% endfor %}
+	{% get_pages %}
+Showing entries
+{{ pages.current_start_index }}-{{ pages.current_end_index }} of
+{{ pages.total_count }}.
+{# Just print pages to render the Digg-style pagination. #}
+{{ pages }}
+</table>

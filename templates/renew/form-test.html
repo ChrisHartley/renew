@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+	</head>
+	<body>
+		<form action="" method="post">
+			{% csrf_token %}
+
+			<input type="text" name="streetAddress" placeholder="Street Address" />
+			<input type="text" name="parcelNumber" placeholder="Parcel Number" />
+			<input type="text" name="minsize" placeholder="Min size sq ft" />
+			<input type="text" name="maxsize" placeholder="Max size sq ft" />
+			<label for="Zipcode">Zipcode</label>
+			<select multiple name="zipcode">
+				{% for zipcode in zipcodes  %}
+					<option>{{zipcode.name}}</option>
+				{% endfor %}
+			</select>
+			<label for="Zoning">Zoning</label>
+			<select multiple name="Zoning">
+				{% for zone in zones  %}
+					<option>{{zone.name}}</option>
+				{% endfor %}
+			</select>
+			<label for="CDC">CDC</label>
+			<select multiple name="CDC">
+				{% for cdc in cdcs  %}
+					<option>{{cdc.name}}</option>
+				{% endfor %}
+			</select>
+			
+			<label for="nsp">NSP</label>
+			<input type="radio" name="nsp" checked="checked" value=""/>either
+			<input type="radio" name="nsp" value="true"/>true
+			<input type="radio" name="nsp" value="false"/>false
+
+			<label for="structureType">Structure Type</label>
+			<select multiple name="structureType">
+					<option>House</option>
+					<option>Lot</option>
+					<option>Commercial</option>
+					<option>Industrial</option>
+			</select>
+
+			<input type="submit" />
+		</form>
+	</body>
+</html>

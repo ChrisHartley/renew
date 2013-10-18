@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+	</head>
+	<body>
+		<div>
+			<form id="searchForm" action="/map/search/" method="get">
+				{{ form.as_ul }}
+				<input type="hidden" name="searchType" value="lb"/>	
+				<!-- Search:		
+				<input type="radio" name="searchType" value="lb" checked="checked"/>Land Bank
+				<input type="radio" name="searchType" value="sp"/>County Surplus
+				<input type="radio" name="searchType" value="lbsp" />Both<br/> -->
+				Return results as:
+				<input type="radio" name="returnType" value="html" checked="checked"/>html
+				<input type="radio" name="returnType" value="csv"/>csv
+				<input type="submit" />
+			</form>
+		</div>
+	</body>
+</html>
