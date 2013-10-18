@@ -8,7 +8,14 @@
 			<div>
 			<input type="checkbox" onclick="toggleDraw(this);" value="polygon"/>Draw search area on map / <a href="javascript:void(0)" onclick="clearDrawn();">clear drawn area</a>
 			<form id="myForm" action="/map/search/" method="get">
-				{{ form.as_ul }}
+				<a href="javascript:void(0)" onclick="$('#moreSearchOptions').show()">Show more search options</a><br/>
+				<div id="moreSearchOptions" style="display:none">
+					<ul>
+					{% for field in form %}
+						<li>{{ field.label_tag }} {{ field }}
+					{% endfor %}
+					</ul>
+				</div>
 				<input type="hidden" name="searchArea" value="">
 				<input type="hidden" name="searchType" value="lb"/>	
 				<!-- Search:		
