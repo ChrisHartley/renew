@@ -6,10 +6,9 @@
 			</div>			
 			<div id="map"  style='width: 900px; height: 700px;'></div><br/>
 			<div>
-			<input type="checkbox" onclick="toggleDraw(this);" value="polygon"/>Draw search area on map (not implemented)<a href="javascript:void(0)" onclick="clearDrawn();">clear drawn area</a>
+			<input type="checkbox" onclick="toggleDraw(this);" value="polygon"/>Draw search area on map / <a href="javascript:void(0)" onclick="clearDrawn();">clear drawn area</a>
 			<form id="myForm" action="/map/search/" method="get">
 				{{ form.as_ul }}
-				<button onclick="getSearchArea();" type=button>click</button>
 				<input type="hidden" name="searchArea" value="">
 				<input type="hidden" name="searchType" value="lb"/>	
 				<!-- Search:		
@@ -32,13 +31,17 @@
 //jquery ajax form
  
 var options = {		
-//	beforeSerialize: getSearchArea(),		
+	beforeSerialize: function(){
+		getSearchArea();
+	},		
 	dataType: 'html', // because it makes it a json javascript object if you chose json
 	success: getSearchResults
 };
 
 var optionsTable = {
-//	beforeSerialize: getSearchArea(),
+	beforeSerialize: function(){
+		getSearchArea();
+	},
 	data: { returnType: 'html'},				
 	dataType: 'html', // because it makes it a json javascript object if you chose json
 	success: function(data) { 
@@ -48,8 +51,6 @@ var optionsTable = {
 			.endlessPaginate(); 
     } 
 };
-
-
 
 
 $('#myForm').submit(function() {

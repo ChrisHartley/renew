@@ -63,6 +63,10 @@ def search(request):
 		if 'structureType' in request.GET and request.GET['structureType']:
 			structureType = request.GET.getlist('structureType')
 			queries.append(Q(structureType__in=structureType))
+		if 'searchArea' in request.GET and request.GET['searchArea']:
+			searchArea = request.GET.__getitem__('searchArea')
+			searchGeometry = GEOSGeometry(searchArea, srid=900913)
+			queries.append(Q(geometry__within=searchGeometry))
 		if 'returnType' in request.GET and request.GET['returnType']:
 			returnType = request.GET.__getitem__('returnType')
 			if returnType == "html":
