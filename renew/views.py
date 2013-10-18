@@ -44,7 +44,7 @@ def search(request):
 			queries.append(Q(parcel__exact=parcelNumber))
 		if 'streetAddress' in request.GET and request.GET['streetAddress']:
 			streetAddress = request.GET.__getitem__('streetAddress')
-			queries.append(Q(streetAddress__iexact=streetAddress))
+			queries.append(Q(streetAddress__icontains=streetAddress))
 		if 'minsize' in request.GET and request.GET['minsize']:
 			minsize = request.GET.__getitem__('minsize')
 			queries.append(Q(area__gte=minsize))
