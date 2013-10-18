@@ -25,8 +25,7 @@ import csv # used for csv return of search results
 from django.db.models import Q
 import operator
 
-from django.contrib.gis.geos import GEOSGeometry
-
+from django.contrib.gis.geos import GEOSGeometry # used for centroid calculation
 
 
 @csrf_exempt
@@ -87,16 +86,16 @@ def search(request):
 	return HttpResponse(s)
 
 
-def showMap(request):
+def search_form(request):
 	form = SearchForm()
-	return render_to_response('renew/map.html', {
+	return render_to_response('renew/search-form.html', {
 		'form': form,
 	}, context_instance=RequestContext(request))
 
 
-def search_form(request):
+def showMap(request):
 	form = SearchForm()
-	return render_to_response('renew/search-form.html', {
+	return render_to_response('renew/map.html', {
 		'form': form,
 	}, context_instance=RequestContext(request))
 
