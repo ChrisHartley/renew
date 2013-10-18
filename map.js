@@ -159,6 +159,7 @@ function getSearchResults(data)  {
 function clearSearchResults(){
 	searchResultsLayer.destroyFeatures();
 	$('#myTable').empty();
+	//clearDrawn();
 }
 
 
