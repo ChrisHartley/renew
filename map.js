@@ -162,4 +162,16 @@ function clearSearchResults(){
 	//clearDrawn();
 }
 
+function toggleSearchOptions(){
+	if ( $('#searchToggle').is(':contains("Show more search options")') ){
+		$('#moreSearchOptions').show();
+		$('#searchToggle').html('Show fewer search options');
+		return;
+	}else{
+		$('#moreSearchOptions').hide();
+		$('#searchToggle').html('Show more search options');
+	}
+	
+}
+
 
