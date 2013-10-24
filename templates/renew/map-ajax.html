@@ -2,38 +2,17 @@
 				Land bank properties are <span style="color:#33A02C;">green</span>.<br/>
 				<!--		County surplus properties are <span style="color:#FFFFB2; background-color:black">yellow</span> (and slow to load).<br/> -->
 				Search results are <span style="color:#1F78B4;">blue</span>.<br/>
-				Click on parcels for more information.</br>
+				Hover over the [ ? ] beside search fields for more information.<br/>
+				Click on a parcel on the map to show the parcel number and address.</br>
 			</div>			
 			<div id="map"  style='width: 900px; height: 700px;'></div><br/>
 			<div>
-			<input type="checkbox" onclick="toggleDraw(this);" value="polygon"/>Draw search area on map / <a href="javascript:void(0)" onclick="clearDrawn();">clear drawn area</a>
-			<form id="myForm" action="/map/search/" method="get">
-					<ul>
-						<li>{{ form.parcel.label_tag }} {{ form.parcel }}</li>
-						<li>{{ form.streetAddress.label_tag }} {{ form.streetAddress }}</li>
-						<li><a href="javascript:void(0)" onclick="$('#moreSearchOptions').show()">Show more search options</a></li>
-						<div id="moreSearchOptions" style="display:none">
-							<li>{{ form.nsp.label_tag }} {{ form.nsp }}
-							<li>{{ form.structureType.label_tag }} {{ form.structureType }}
-							<li>{{ form.cdc.label_tag }} {{ form.cdc }}
-							<li>{{ form.zone.label_tag }} {{ form.zone }}
-							<li>{{ form.zipcode.label_tag }} {{ form.zipcode }}
-						</div>				
-					</ul>
-				
-				<input type="hidden" name="searchArea" value="">
-				<input type="hidden" name="searchType" value="lb"/>	
-				<!-- Search:		
-				<input type="radio" name="searchType" value="lb" checked="checked"/>Land Bank
-				<input type="radio" name="searchType" value="sp"/>County Surplus
-				<input type="radio" name="searchType" value="lbsp" />Both<br/> -->
-				<input type="submit" value="Search" name="Search">
-				<button type="button" onclick="getCSV();">Download Results</button>
-				<button onclick="clearSearchResults();" type="button" >Clear search results</button>
-			</form>
+
+{% include "renew/search-form-template.html" %}
+
 			<br/>
 		
-		</div>
+			</div>
 		<div id="resultsTable"><p></p>
 		<div name="myTable" id="myTable" class="endless_page_template"></div>
 		</div>
