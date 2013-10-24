@@ -12,7 +12,7 @@
 					</div></li>			
 				{% endif %}
 			{% endfor %}		
-			<button type="button" onclick="$('#moreSearchOptions').show()">Show more search options</button></li>
+			<button type="button" id="searchToggle" onclick="toggleSearchOptions()">Show more search options</button></li>
 			<div id="moreSearchOptions" style="display:none">
 			{% for formItem in form %}
 				{% if forloop.counter0 > 1 %}
@@ -32,9 +32,10 @@
 	<input type="radio" name="searchType" value="lb" checked="checked"/>Land Bank
 	<input type="radio" name="searchType" value="sp"/>County Surplus
 	<input type="radio" name="searchType" value="lbsp" />Both<br/> -->
-	<input type="submit" value="Search" name="Search">
-	<button type="button" onclick="getCSV();">Download Results</button>
 	<button onclick="clearSearchResults();" type="button" >Clear search results</button>
-	<button type="button" onclick="clearDrawn();">clear drawn area</button>
+	<button type="button" onclick="clearDrawn();">Clear drawn search area</button>
+	<button type="button" onclick="getCSV();">Download Results</button>
+	<input type="submit" value="Search" name="Search">
+
 </form>
 </div>
