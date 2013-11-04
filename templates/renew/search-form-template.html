@@ -4,24 +4,15 @@
 	<ul>
 		<li><input type="checkbox" onclick="toggleDraw(this);" value="polygon"/>Draw search area on map</input></li>
 			{% for formItem in form %}
-				{% if forloop.counter0 < 2 %}
+				{% if forloop.counter0 == 2 %}
+					<button type="button" id="searchToggle" onclick="toggleSearchOptions()">Show more search options</button></li>
+					<div id="moreSearchOptions" style="display:none">
+				{% endif %}
 					<li><div  class="searchLine">
 						<span class="formLabel">{{ formItem.label_tag }} [ <a href="#" class="tooltip">?
 							<span>{{ formItem.help_text }}</span></a>]</span>
 						<span class="formField">{{ formItem }} </span>
 					</div></li>			
-				{% endif %}
-			{% endfor %}		
-			<button type="button" id="searchToggle" onclick="toggleSearchOptions()">Show more search options</button></li>
-			<div id="moreSearchOptions" style="display:none">
-			{% for formItem in form %}
-				{% if forloop.counter0 > 1 %}
-					<li><div  class="searchLine">
-						<span class="formLabel">{{ formItem.label_tag }} [ <a href="#" class="tooltip">?
-							<span>{{ formItem.help_text }}</span></a>]</span>
-						<span class="formField">{{ formItem }} </span>
-					</div></li>			
-				{% endif %}
 			{% endfor %}		
 			</div>				
 		</ul>
