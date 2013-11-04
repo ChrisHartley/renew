@@ -97,8 +97,10 @@ function init(){
 	polygonLayer = new OpenLayers.Layer.Vector("Drawn Search Area"); // search by polygon layer
 	searchResultsLayer = new OpenLayers.Layer.Vector("Search Results", {styleMap: searchResultStyleMap}); 
 	surplusLayer = new OpenLayers.Layer.Vector("Surplus Properties", {
-		//projection: "EPSG:4326",
-		strategies: [new OpenLayers.Strategy.Fixed()],
+		//strategies: [
+        //                new OpenLayers.Strategy.Fixed(),
+        //                new OpenLayers.Strategy.Cluster()
+        //            ],
 		styleMap: surplusStyleMap,
 		protocol: new OpenLayers.Protocol.HTTP({
 			url: "/map/search/?searchType=sp",
@@ -107,9 +109,12 @@ function init(){
 	});
 
 
+
 	lbLayer = new OpenLayers.Layer.Vector("Landbank Properties", {
-		//projection: "EPSG:4326",
-		strategies: [new OpenLayers.Strategy.Fixed()],
+		strategies: [
+                        //new OpenLayers.Strategy.Fixed(),
+                        new OpenLayers.Strategy.Cluster({distance:20, threshold:2})
+                    ],
 		styleMap: lbStyleMap,
 		protocol: new OpenLayers.Protocol.HTTP({
 			url: "/map/search/?searchType=lb",
@@ -127,7 +132,7 @@ function init(){
 	map.addLayer(lbLayer);
    	//map.addLayer(surplusLayer);
 	map.addLayer(searchResultsLayer);
-
+	//strat.activate();
 
 	//surplusLayer.setVisibility(false);
 
@@ -143,6 +148,7 @@ function init(){
 	map.addControl(selectControl);
 	selectControl.activate(); 
 
+	OpenLayers.Console.log(lbLayer);
 
 }
 
