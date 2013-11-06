@@ -9,8 +9,8 @@
 					<div id="moreSearchOptions" style="display:none">
 				{% endif %}
 					<li><div  class="searchLine">
-						<span class="formLabel">{{ formItem.label_tag }} [ <a href="#" class="tooltip">?
-							<span>{{ formItem.help_text }}</span></a>]</span>
+						<span class="formLabel">{{ formItem.label_tag }} <a href="#" class="tooltip">[ ? ]
+							<span>{{ formItem.help_text }}</span></a></span>
 						<span class="formField">{{ formItem }} </span>
 					</div></li>			
 			{% endfor %}		
@@ -23,9 +23,8 @@
 	<input type="radio" name="searchType" value="lb" checked="checked"/>Land Bank
 	<input type="radio" name="searchType" value="sp"/>County Surplus
 	<input type="radio" name="searchType" value="lbsp" />Both<br/> -->
-	<button onclick="clearSearchResults();" type="button" >Clear search results</button>
-	<button type="button" onclick="clearDrawn();">Clear drawn search area</button>
-	<button type="button" onclick="getCSV();">Download Results</button>
+	<input type="reset" value="New Search" onclick="clearDrawn(); clearSearchResults();">
+	<button type="button" onclick="getCSV();">Search and Download Results</button>
 	<input type="submit" value="Search" name="Search">
 
 </form>
