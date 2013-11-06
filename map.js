@@ -91,16 +91,11 @@ function init(){
 	var lbStyleMap = new OpenLayers.StyleMap({fillColor: '#33A02C', strokeWidth: '.05', strokeColor: 'black'});
 	var searchResultStyleMap = new OpenLayers.StyleMap({fillColor: '#1F78B4', strokeWidth: '.05', strokeColor: 'black'});
 
-	var strat = new OpenLayers.Strategy.Cluster({distance:20, threshold:2});
-
 	// define vector layers
 	polygonLayer = new OpenLayers.Layer.Vector("Drawn Search Area"); // search by polygon layer
 	searchResultsLayer = new OpenLayers.Layer.Vector("Search Results", {styleMap: searchResultStyleMap}); 
 	surplusLayer = new OpenLayers.Layer.Vector("Surplus Properties", {
-		//strategies: [
-        //                new OpenLayers.Strategy.Fixed(),
-        //                new OpenLayers.Strategy.Cluster()
-        //            ],
+		strategies: [new OpenLayers.Strategy.Fixed()],
 		styleMap: surplusStyleMap,
 		protocol: new OpenLayers.Protocol.HTTP({
 			url: "/map/search/?searchType=sp",
@@ -108,13 +103,8 @@ function init(){
 		})
 	});
 
-
-
 	lbLayer = new OpenLayers.Layer.Vector("Landbank Properties", {
-		strategies: [
-                        //new OpenLayers.Strategy.Fixed(),
-                        new OpenLayers.Strategy.Cluster({distance:20, threshold:2})
-                    ],
+		strategies: [new OpenLayers.Strategy.Fixed()],
 		styleMap: lbStyleMap,
 		protocol: new OpenLayers.Protocol.HTTP({
 			url: "/map/search/?searchType=lb",
@@ -130,9 +120,8 @@ function init(){
 	map.addLayer(polygonLayer);
     map.addLayer(stamenTerrainLayer);
 	map.addLayer(lbLayer);
-   	//map.addLayer(surplusLayer);
+   //	map.addLayer(surplusLayer);
 	map.addLayer(searchResultsLayer);
-	//strat.activate();
 
 	//surplusLayer.setVisibility(false);
 
@@ -147,8 +136,6 @@ function init(){
 		{onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
 	selectControl.activate(); 
-
-	OpenLayers.Console.log(lbLayer);
 
 }
 
@@ -179,5 +166,7 @@ function toggleSearchOptions(){
 	}
 	
 }
+
+
 
 
