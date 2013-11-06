@@ -1,19 +1,23 @@
 			<div id="intro" title="Helpful Hints">
-				Land bank properties are <span style="color:#33A02C;">green</span>.<br/>
-				<!--		County surplus properties are <span style="color:#FFFFB2; background-color:black">yellow</span> (and slow to load).<br/> -->
-				Search results are <span style="color:#1F78B4;">blue</span>.<br/>
-				Hover over the [ ? ] beside search fields for more information.<br/>
-				Click on a parcel on the map to show the parcel number and address.</br>
-				Drawn search areas persit across searches until you click the "Clear drawn search area" button.</br>
+				<ul>
+					<li>Land bank properties are <span style="color:#33A02C;">green</span>.</li>
+				<!--		<li>County surplus properties are <span style="color:#FFFFB2; background-color:black">yellow</span> (and slow to load).</li> -->
+					<li>Search results are <span style="color:#1F78B4;">blue</span>.</li>
+					<li>Hover over the [ ? ] beside search fields for more information.</li>
+					<li>Click on a parcel on the map to show the parcel number and address.</li>
+					<li>Drawn search area remains across searches until you click the "New Search" button.</li>
+				</ul>
 			</div>			
 			<div id="map"  style='width: 900px; height: 700px; position:relative;'></div><br/>
 			<div>
+			Show <a href="javascript:void(0);" id="help-hints">helpful hints</a>
 
 {% include "renew/search-form-template.html" %}
 
 			<br/>
 		
 			</div>
+		<a href="/show/map/search/?returnType=csv&searchType=lb">Download all available land bank properties</a>
 		<div id="resultsTable"><p></p>
 		<div name="myTable" id="myTable" class="endless_page_template"></div>
 		</div>
@@ -52,7 +56,14 @@ $('#myForm').submit(function() {
 	}); 
 
 $(function() {
-    $( "#intro" ).dialog();
-  });
+	$( "#intro" ).dialog();
+	$('#help-hints').click(function () {
+		$("#intro").dialog('open');
+        return false;
+    });
+
+ });
+
+
 
 </script>
