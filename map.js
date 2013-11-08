@@ -4,6 +4,7 @@ var zoom = 12;
 var map, OSMlayer, gmap, gypb, statemLayer, stamenTerrainLayer, drawControls, polyfeature, polygonLayer, searchResultsLayer, searchResults, surplusLayer;
 var selectControl, selectedFeature, selectedFill, selectedLayer;
 var searchArea = new Array();
+var clusterStrategy = new OpenLayers.Strategy.Cluster({distance: 15, threshold: 4});
 
 var stamenAttribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.';
 
@@ -87,8 +88,27 @@ function init(){
 
 	
 	// define style maps
+
+	var lbStyle = new OpenLayers.Style({
+		fillColor: '#33A02C', 
+		strokeWidth: '.05', 
+		strokeColor: 'black', 
+		pointRadius: '8', 
+		label:"${label}",
+		fontColor: "#ffffff",
+        fontOpacity: 0.8,
+        fontSize: "12px" 
+	}, {
+		context: {
+			label: function(feature) {
+				// clustered features count or blank if feature is not a cluster
+				return feature.cluster ? feature.cluster.length : "";  
+      		}	
+		}
+	}); 
+
 	var surplusStyleMap = new OpenLayers.StyleMap({fillColor: '#A6CEE3', strokeWidth: '.05', strokeColor: 'black'});
-	var lbStyleMap = new OpenLayers.StyleMap({fillColor: '#33A02C', strokeWidth: '.05', strokeColor: 'black'});
+	var lbStyleMap = new OpenLayers.StyleMap(lbStyle);
 	var searchResultStyleMap = new OpenLayers.StyleMap({fillColor: '#1F78B4', strokeWidth: '.05', strokeColor: 'black'});
 
 	// define vector layers
@@ -103,13 +123,18 @@ function init(){
 		})
 	});
 
+
+
 	lbLayer = new OpenLayers.Layer.Vector("Landbank Properties", {
-		strategies: [new OpenLayers.Strategy.Fixed()],
-		styleMap: lbStyleMap,
 		protocol: new OpenLayers.Protocol.HTTP({
 			url: "/map/search/?searchType=lb",
 			format: new OpenLayers.Format.GeoJSON()
-		})
+		}),
+		strategies: [
+			new OpenLayers.Strategy.Fixed(),
+			clusterStrategy
+    	],
+		styleMap: lbStyleMap
 	});
 
 
@@ -167,6 +192,13 @@ function toggleSearchOptions(){
 	
 }
 
+function toggleClustering(){
+	if ( $('#clusterToggle').prop('checked') ){
+		clusterStrategy.activate();
+	}else{
+		clusterStrategy.deactivate();
+	}
+}
 
 
 
