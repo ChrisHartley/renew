@@ -10,7 +10,8 @@
 			</div>			
 			<div id="map"  style='width: 900px; height: 700px; position:relative;'></div><br/>
 			<div>
-			Show <a href="javascript:void(0);" id="help-hints">helpful hints</a>
+			Show <a href="javascript:void(0);" id="help-hints">helpful hints</a><br/>
+			<!-- <input type="checkbox" onclick="toggleClustering(this);" name="clusterToggle" checked>Enable Clustering</input> -->
 
 {% include "renew/search-form-template.html" %}
 
@@ -25,7 +26,6 @@
 <script type="text/javascript">  
 
 //jquery ajax form
- 
 var options = {		
 	beforeSerialize: function(){
 		getSearchArea();
@@ -63,7 +63,4 @@ $(function() {
     });
 
  });
-
-
-
 </script>
