@@ -199,19 +199,20 @@ function toggleSearchOptions(){
 }
 
 function toggleClustering(){
-	//alert("in toggleClustering()");
+
 	selectControl.deactivate();
 	map.removeControl(selectControl);
 	map.removeLayer(lbLayer);
+
 	var strategies = [];
-	console.log(document.getElementById("toggleClustersCheckbox").checked);
+
 	if ( document.getElementById("toggleClustersCheckbox").checked ) {
 		strategies.push(new OpenLayers.Strategy.Fixed());
 		strategies.push(clusterStrategy);
 	}else {
 		strategies.push(new OpenLayers.Strategy.Fixed());
 	}
-	console.log(strategies);
+
 	lbLayer = new OpenLayers.Layer.Vector("Landbank Properties", {
 		protocol: new OpenLayers.Protocol.HTTP({
 			url: "/map/search/?searchType=lb",
