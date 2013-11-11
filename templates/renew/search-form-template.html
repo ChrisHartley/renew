@@ -2,7 +2,7 @@
 
 <form id="myForm" action="/map/search/" method="get">
 	<ul>
-		<li><input type="checkbox" onclick="toggleDraw(this);" value="polygon"/>Draw search area on map</input></li>
+		<li><input type="checkbox" onclick="toggleDraw(this);" name="searchPolygon" value="polygon"/>Draw search area on map</input></li>
 			{% for formItem in form %}
 				{% if forloop.counter0 == 2 %}
 					<button type="button" id="searchToggle" onclick="toggleSearchOptions()">Show more search options</button></li>
