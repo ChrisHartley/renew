@@ -3,6 +3,7 @@ var lat = 4835547.198063937388361;
 var zoom = 12;
 var map, OSMlayer, gmap, gypb, statemLayer, stamenTerrainLayer, drawControls, polyfeature, polygonLayer, searchResultsLayer, searchResults, surplusLayer;
 var selectControl, selectedFeature, selectedFill, selectedLayer;
+var lbStyle, lbStyleMap;
 var searchArea = new Array();
 var clusterStrategy = new OpenLayers.Strategy.Cluster({distance: 15, threshold: 4});
 
@@ -88,8 +89,8 @@ function init(){
 
 	
 	// define style maps
-
-	var lbStyle = new OpenLayers.Style({
+	
+	lbStyle = new OpenLayers.Style({
 		fillColor: '#33A02C', 
 		strokeWidth: '.05', 
 		strokeColor: 'black', 
@@ -108,7 +109,7 @@ function init(){
 	}); 
 
 	var surplusStyleMap = new OpenLayers.StyleMap({fillColor: '#A6CEE3', strokeWidth: '.05', strokeColor: 'black'});
-	var lbStyleMap = new OpenLayers.StyleMap(lbStyle);
+	lbStyleMap = new OpenLayers.StyleMap(lbStyle);
 	var searchResultStyleMap = new OpenLayers.StyleMap({fillColor: '#1F78B4', strokeWidth: '.05', strokeColor: 'black'});
 
 	// define vector layers
@@ -123,7 +124,11 @@ function init(){
 		})
 	});
 
-
+	browserWarning.prototype.test = function(callback){
+		if(this.isOldBrowser()){
+			alert("here");
+		}
+	}
 
 	lbLayer = new OpenLayers.Layer.Vector("Landbank Properties", {
 		protocol: new OpenLayers.Protocol.HTTP({
@@ -131,12 +136,12 @@ function init(){
 			format: new OpenLayers.Format.GeoJSON()
 		}),
 		strategies: [
-			new OpenLayers.Strategy.Fixed(),
-			clusterStrategy
+			new OpenLayers.Strategy.Fixed() //,
+			//clusterStrategy
     	],
 		styleMap: lbStyleMap
 	});
-
+	map.addLayer(lbLayer);
 
 	map.addLayer(stamenLayer);	
 	map.addLayer(OSMlayer);
@@ -144,7 +149,7 @@ function init(){
 	map.addLayer(ghyb);
 	map.addLayer(polygonLayer);
     map.addLayer(stamenTerrainLayer);
-	map.addLayer(lbLayer);
+
    //	map.addLayer(surplusLayer);
 	map.addLayer(searchResultsLayer);
 
@@ -180,6 +185,7 @@ function clearSearchResults(){
 	//clearDrawn();
 }
 
+;
 function toggleSearchOptions(){
 	if ( $('#searchToggle').is(':contains("Show more search options")') ){
 		$('#moreSearchOptions').show();
@@ -193,12 +199,91 @@ function toggleSearchOptions(){
 }
 
 function toggleClustering(){
-	if ( $('#clusterToggle').prop('checked') ){
-		clusterStrategy.activate();
-	}else{
-		clusterStrategy.deactivate();
+	//alert("in toggleClustering()");
+	selectControl.deactivate();
+	map.removeControl(selectControl);
+	map.removeLayer(lbLayer);
+	var strategies = [];
+	console.log(document.getElementById("toggleClustersCheckbox").checked);
+	if ( document.getElementById("toggleClustersCheckbox").checked ) {
+		strategies.push(new OpenLayers.Strategy.Fixed());
+		strategies.push(clusterStrategy);
+	}else {
+		strategies.push(new OpenLayers.Strategy.Fixed());
 	}
+	console.log(strategies);
+	lbLayer = new OpenLayers.Layer.Vector("Landbank Properties", {
+		protocol: new OpenLayers.Protocol.HTTP({
+			url: "/map/search/?searchType=lb",
+			format: new OpenLayers.Format.GeoJSON()
+		}),
+		strategies: strategies,
+		styleMap: lbStyleMap
+	});
+	map.addLayer(lbLayer);
+	selectControl = new OpenLayers.Control.SelectFeature([lbLayer, searchResultsLayer],
+		{onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+	map.addControl(selectControl);
+	selectControl.activate(); 
+
 }
 
+//jquery ajax form
+$(function(){
+	var options = {		
+		beforeSerialize: function(){
+			getSearchArea();
+		},		
+		dataType: 'html', // because it makes it a json javascript object if you chose json
+		success: getSearchResults
+	};
+
+	var optionsTable = {
+		beforeSerialize: function(){
+			getSearchArea();
+		},
+		data: { returnType: 'html'},				
+		dataType: 'html', // because it makes it a json javascript object if you chose json
+		success: function(data) { 
+		    $('#myTable')
+				.empty()
+				.append(data)
+				.endlessPaginate(); 
+		} 
+	};
+
+
+	$("#myForm").validate({
+		rules: {
+			maxsize: {
+				number: true
+			},
+			minsize: {
+				number: true
+			}
+		},
+		submitHandler: function(form) {
+			$(form).ajaxSubmit(optionsTable);
+			$(form).ajaxSubmit(options);
+			return false;
+		},
+		debug: true,
+		success: "valid"
+	});
+});
+
+$(function() {
+	$( "#intro" ).dialog();
+
+
+	$('#help-hints').click(function () {
+		$("#intro").dialog('open');
+        return false;
+    });
+	$('#searchToggle').click(function() { toggleSearchOptions(); });
+	$('#downloadButton').click(function() { getCSV(); } );
+	$('#toggleClustersCheckbox').change(function() { toggleClustering(); } );
+
+ });
 
 
