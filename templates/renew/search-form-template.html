@@ -2,10 +2,11 @@
 
 <form id="myForm" action="/map/search/" method="get">
 	<ul>
-		<li><input type="checkbox" onclick="toggleDraw(this);" name="searchPolygon" value="polygon"/>Draw search area on map</input></li>
+		<li><input type="checkbox" onclick="toggleDraw(this);" name="searchPolygon" value="polygon">Draw search area on map</input></li>
+		<li><input type="checkbox" id="toggleClustersCheckbox"/>Enable marker clustering (faster)</input></li>
 			{% for formItem in form %}
 				{% if forloop.counter0 == 2 %}
-					<button type="button" id="searchToggle" onclick="toggleSearchOptions()">Show more search options</button></li>
+					<button type="button" id="searchToggle">Show more search options</button></li>
 					<div id="moreSearchOptions" style="display:none">
 				{% endif %}
 					<li><div  class="searchLine">
@@ -24,7 +25,7 @@
 	<input type="radio" name="searchType" value="sp"/>County Surplus
 	<input type="radio" name="searchType" value="lbsp" />Both<br/> -->
 	<input type="reset" value="New Search" onclick="clearDrawn(); clearSearchResults();">
-	<button type="button" onclick="getCSV();">Search and Download Results</button>
+	<button type="button" id="downloadButton">Search and Download Results</button>
 	<input type="submit" value="Search" name="Search">
 
 </form>
