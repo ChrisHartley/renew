@@ -268,8 +268,7 @@ $(function(){
 			$(form).ajaxSubmit(options);
 			return false;
 		},
-		debug: true,
-		success: "valid"
+		debug: false
 	});
 });
 
