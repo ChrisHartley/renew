@@ -114,7 +114,8 @@ function init(){
 
 	// define vector layers
 	polygonLayer = new OpenLayers.Layer.Vector("Drawn Search Area"); // search by polygon layer
-	searchResultsLayer = new OpenLayers.Layer.Vector("Search Results", {styleMap: searchResultStyleMap}); 
+	searchResultsLayer = new OpenLayers.Layer.Vector("Search Results", {styleMap: searchResultStyleMap, rendererOptions: { zIndexing: true }});
+
 	surplusLayer = new OpenLayers.Layer.Vector("Surplus Properties", {
 		strategies: [new OpenLayers.Strategy.Fixed()],
 		styleMap: surplusStyleMap,
@@ -123,7 +124,7 @@ function init(){
 			format: new OpenLayers.Format.GeoJSON()
 		})
 	});
-
+	
 	browserWarning.prototype.test = function(callback){
 		if(this.isOldBrowser()){
 			alert("here");
@@ -136,12 +137,13 @@ function init(){
 			format: new OpenLayers.Format.GeoJSON()
 		}),
 		strategies: [
-			new OpenLayers.Strategy.Fixed() //,
-			//clusterStrategy
+			new OpenLayers.Strategy.Fixed()
     	],
-		styleMap: lbStyleMap
+		styleMap: lbStyleMap,
+		rendererOptions: { zIndexing: true }
 	});
 	map.addLayer(lbLayer);
+	map.setLayerIndex(lbLayer, 1);
 
 	map.addLayer(stamenLayer);	
 	map.addLayer(OSMlayer);
@@ -152,6 +154,8 @@ function init(){
 
    //	map.addLayer(surplusLayer);
 	map.addLayer(searchResultsLayer);
+	map.setLayerIndex(searchResultsLayer, 2);
+	console.log("srl: " + searchResultsLayer.getZIndex());
 
 	//surplusLayer.setVisibility(false);
 
@@ -219,9 +223,14 @@ function toggleClustering(){
 			format: new OpenLayers.Format.GeoJSON()
 		}),
 		strategies: strategies,
-		styleMap: lbStyleMap
+		styleMap: lbStyleMap,
+		rendererOptions: { zIndexing: true }
 	});
+	
 	map.addLayer(lbLayer);
+	map.setLayerIndex(lbLayer, 1);
+	//console.log("lbLayer: " + lbLayer.getZIndex());
+	//console.log("searchResultsLayer: " + searchResultsLayer.getZIndex());
 	selectControl = new OpenLayers.Control.SelectFeature([lbLayer, searchResultsLayer],
 		{onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
