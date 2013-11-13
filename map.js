@@ -152,12 +152,8 @@ function init(){
 	map.addLayer(polygonLayer);
     map.addLayer(stamenTerrainLayer);
 
-   //	map.addLayer(surplusLayer);
 	map.addLayer(searchResultsLayer);
 	map.setLayerIndex(searchResultsLayer, 2);
-	console.log("srl: " + searchResultsLayer.getZIndex());
-
-	//surplusLayer.setVisibility(false);
 
 	map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
 
@@ -229,8 +225,7 @@ function toggleClustering(){
 	
 	map.addLayer(lbLayer);
 	map.setLayerIndex(lbLayer, 1);
-	//console.log("lbLayer: " + lbLayer.getZIndex());
-	//console.log("searchResultsLayer: " + searchResultsLayer.getZIndex());
+
 	selectControl = new OpenLayers.Control.SelectFeature([lbLayer, searchResultsLayer],
 		{onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
@@ -283,7 +278,6 @@ $(function(){
 
 $(function() {
 	$( "#intro" ).dialog();
-
 
 	$('#help-hints').click(function () {
 		$("#intro").dialog('open');
