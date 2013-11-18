@@ -63,6 +63,9 @@ def search(request):
 		if 'structureType' in request.GET and request.GET['structureType']:
 			structureType = request.GET.getlist('structureType')
 			queries.append(Q(structureType__in=structureType))
+		if 'nsp' in request.GET and request.GET['nsp']:
+			nsp = request.GET.__getitem__('nsp')
+			queries.append(Q(nsp=nsp))
 		if 'searchArea' in request.GET and request.GET['searchArea']:
 			searchArea = request.GET.__getitem__('searchArea')
 			searchGeometry = GEOSGeometry(searchArea, srid=900913)
