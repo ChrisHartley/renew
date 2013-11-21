@@ -20,7 +20,7 @@
 		<td>{{property.structureType}}</td>
 		<td>{{property.cdc}}</td>
 		<td>{{property.zone}}</td>
-		<td>{{property.nsp}}</td>
+		<td>{{property.nsp|yesno:"Yes,No"}}</td>
 		<td>{{property.area}}</td>
 	</tr>
 	{% endfor %}
