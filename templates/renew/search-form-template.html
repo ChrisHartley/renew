@@ -6,7 +6,8 @@
 		<li><input type="checkbox" id="toggleClustersCheckbox" name="toggleClustersCheckbox"/>Enable marker clustering (faster)</input></li>
 			{% for formItem in form %}
 				{% if forloop.counter0 == 2 %}
-					<button type="button" id="searchToggle">Show more search options</button></li>
+					<!-- <button type="button" id="searchToggle">Show more search options</button></li> -->
+					<h5 id="searchToggle">Show more search options >>></h5>
 					<div id="moreSearchOptions" style="display:none">
 						<em>Hold down Control or Command to select or unselect multiple options.</em>
 				{% endif %}
@@ -21,13 +22,9 @@
 	
 	<input type="hidden" name="searchArea" value="">
 	<input type="hidden" name="searchType" value="lb"/>	
-	<!-- Search:		
-	<input type="radio" name="searchType" value="lb" checked="checked"/>Land Bank
-	<input type="radio" name="searchType" value="sp"/>County Surplus
-	<input type="radio" name="searchType" value="lbsp" />Both<br/> -->
-	<input type="reset" value="New Search" onclick="clearDrawn(); clearSearchResults();">
-	<button type="button" id="downloadButton">Search and Download Results</button>
 	<input type="submit" value="Search" name="Search">
+	<button type="button" id="downloadButton">Search and Download Results to an Excel document</button>
+	<input type="reset" value="New Search" onclick="clearDrawn(); clearSearchResults();">	
 
 </form>
 </div>
