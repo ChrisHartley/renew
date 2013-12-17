@@ -6,7 +6,8 @@
 		<th>Structure Type</th>
 		<th>CDC</th>
 		<th>Zoned</th>
-		<th>NSP</th>
+		<th><a href="#" class="tooltip">NSP<span>If a property comes with requirements related to the Neighborhood Stabilization Program.</span></a></th>
+		<th>Quiet Title Complete</th>
 		<th>Area (sq ft)</th>
 	</tr>
 
@@ -19,8 +20,9 @@
 		<td>{{property.zipcode}}</td>
 		<td>{{property.structureType}}</td>
 		<td>{{property.cdc}}</td>
-		<td>{{property.zone}}</td>
+		<td>{{property.zone}}</td>	
 		<td>{{property.nsp|yesno:"Yes,No"}}</td>
+		<td>{{property.quiet_title_complete|yesno:"Yes,No"}}</td>
 		<td>{{property.area}}</td>
 	</tr>
 	{% endfor %}
