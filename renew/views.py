@@ -83,7 +83,11 @@ def search(request):
 				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Area ft^2", "Lat/Lon"])
 				properties = Property.objects.filter(reduce(operator.and_, queries))				
 				for row in properties:
-					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, row.nsp, row.area, GEOSGeometry(row.geometry).centroid])
+					if row.nsp:
+						nspValue = "Yes"
+					else:
+						nspValue = "No" 
+					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, row.area, GEOSGeometry(row.geometry).centroid])
 				return response	
 
 	properties = Property.objects.filter(reduce(operator.and_, queries))
