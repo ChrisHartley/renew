@@ -38,7 +38,7 @@ class Property(models.Model):
 	streetAddress = models.CharField(max_length=255, help_text="Supports partial matching, so you can enter either the full street address (eg 1425 E 11TH ST) to find one property or just the street name (eg 11th st) to find all the properties on that street.", verbose_name='street address')
 	nsp = models.BooleanField(default=False, help_text="If a property comes with requirements related to the Neighborhood Stabilization Program.", verbose_name='NSP')
 	quiet_title_complete = models.BooleanField(default=False, help_text="If quiet title process has been completed.", verbose_name='Quiet Title Complete')
-	structureType = models.CharField(max_length=20, null=True, blank=True, help_text="As classified by the Assessor", verbose_name='structure type')
+	structureType = models.CharField(max_length=255, null=True, blank=True, help_text="As classified by the Assessor", verbose_name='structure type')
 
 	cdc = models.ForeignKey(CDC, blank=True, null=True, help_text="The Community Development Corporation boundries the property falls within.", verbose_name='CDC')
 	zone = models.ForeignKey(Zoning, blank=True, null=True, help_text="The zoning of the property")
