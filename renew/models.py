@@ -43,6 +43,7 @@ class Property(models.Model):
 	cdc = models.ForeignKey(CDC, blank=True, null=True, help_text="The Community Development Corporation boundries the property falls within.", verbose_name='CDC')
 	zone = models.ForeignKey(Zoning, blank=True, null=True, help_text="The zoning of the property")
 	zipcode = models.ForeignKey(Zipcode, blank=True, null=True, help_text="The zipcode of the property")
+	urban_garden = models.BooleanField(default=False, help_text="If the property is currently licensed as an urban garden through the Office of Sustainability")
 
 	area = models.FloatField(help_text="The parcel area in square feet")
 		
