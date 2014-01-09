@@ -80,14 +80,18 @@ def search(request):
 				response = HttpResponse(content_type='text/csv')
 				response['Content-Disposition'] = 'attachment; filename="renew-properties.csv"'
 				writer = csv.writer(response)
-				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Area ft^2", "Lat/Lon"])
+				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden" "Area ft^2", "Lat/Lon"])
 				properties = Property.objects.filter(reduce(operator.and_, queries))				
 				for row in properties:
 					if row.nsp:
 						nspValue = "Yes"
 					else:
-						nspValue = "No" 
-					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, row.area, GEOSGeometry(row.geometry).centroid])
+						nspValue = "No"
+					if row.urban_garden:
+						ugValue = "Yes"
+					else:
+						ugValue = "No" 
+					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, row.area, GEOSGeometry(row.geometry).centroid])
 				return response	
 
 	properties = Property.objects.filter(reduce(operator.and_, queries))
