@@ -61,12 +61,21 @@ function getSearchArea(){
 
 
 function init(){
+	
+
 	map = new OpenLayers.Map( 'map', {controls: [	
 		new OpenLayers.Control.PanZoomBar(), 
 		new OpenLayers.Control.KeyboardDefaults(), 
 		new OpenLayers.Control.Navigation(),
 		new OpenLayers.Control.Attribution()
 	]});
+
+
+	var extent = new OpenLayers.Bounds(-86.328121, 39.632177, -85.937379, 39.997392);	// (left, bottom, right, top)
+	var proj = new OpenLayers.Projection("EPSG:4326");
+	var intProj = new OpenLayers.Projection("EPSG:900913");
+	extent.transform(proj, intProj);
+	map.setOptions({restrictedExtent: extent});
 	
 	var ls = new OpenLayers.Control.LayerSwitcher({});
 	map.addControl(ls);
