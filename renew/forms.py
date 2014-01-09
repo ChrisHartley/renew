@@ -13,7 +13,7 @@ class SearchForm(ModelForm):
 	structureType = forms.ModelMultipleChoiceField(queryset=Property.objects.distinct('structureType').order_by('structureType').filter(propertyType__exact='lb').values_list('structureType', flat=True), widget=forms.SelectMultiple, help_text='As classified by the Assessor.', label='Structure Type')
 	minsize = forms.IntegerField(label="Minimum parcel size", help_text='Area is in square feet.')
 	maxsize = forms.IntegerField(label="Maximum parcel size", help_text='Area is in square feet.')
-	nsp = forms.ChoiceField(widget=forms.Select, help_text="If a property comes with requirements related to the Neighborhood Stabilization Program.", choices = (('1', 'Yes'), ('0', 'No'), ('', '') ), initial='')
+	nsp = forms.ChoiceField(widget=forms.Select, label='NSP', help_text="If a property comes with requirements related to the Neighborhood Stabilization Program.", choices = (('1', 'Yes'), ('0', 'No'), ('', '') ), initial='')
 	class Meta:
 		model = Property
 		fields = ['parcel', 'streetAddress', 'nsp', 'structureType', 'cdc', 'zone', 'zipcode']
