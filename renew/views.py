@@ -6,6 +6,8 @@ from renew.models import CDC
 from renew.forms import SearchForm
 
 from django.http import HttpResponse
+from django.http import HttpResponseBadRequest
+
 from django.contrib.gis.geos import GEOSGeometry
 
 
