@@ -96,7 +96,7 @@ def search(request):
 					else:
 						qtValue = "No" 
 					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, row.area, GEOSGeometry(row.geometry).centroid])
-				return response	
+				return HttpResponseBadRequest	
 	try:
 		properties = Property.objects.filter(reduce(operator.and_, queries))
 	except:
