@@ -191,6 +191,7 @@ function getSearchResults(data)  {
 function clearSearchResults(){
 	searchResultsLayer.destroyFeatures();
 	$('#myTable').empty();
+	$('input[name=searchArea]').val("");
 	//clearDrawn();
 }
 
