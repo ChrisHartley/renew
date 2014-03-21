@@ -82,7 +82,7 @@ def search(request):
 				response = HttpResponse(content_type='text/csv')
 				response['Content-Disposition'] = 'attachment; filename="renew-properties.csv"'
 				writer = csv.writer(response)
-				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Area ft^2", "Lat/Lon"])
+				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Area ft^2", "Status", "Lat/Lon"])
 				properties = Property.objects.filter(reduce(operator.and_, queries))				
 				for row in properties:
 					if row.nsp:
@@ -96,13 +96,13 @@ def search(request):
 					if row.quiet_title_complete:
 						qtValue = "Yes"
 					else:
-						qtValue = "No" 
-					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, row.area, GEOSGeometry(row.geometry).centroid])
+						qtValue = "No"
+					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, row.area, row.status, GEOSGeometry(row.geometry).centroid])
 				return response	
 	try:
 		properties = Property.objects.filter(reduce(operator.and_, queries))
 	except:
-		return	
+		return HttpResponseBadRequest()
 	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel'])
 	geoj = GeoJSON.GeoJSON()
 	s = geoj.encode(djf.decode(properties))
