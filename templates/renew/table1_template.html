@@ -9,6 +9,7 @@
 		<th><a href="#" class="tooltip">NSP<span>If a property comes with requirements related to the Neighborhood Stabilization Program.</span></a></th>
 		<th>Quiet Title Complete</th>
 		<th>Area (sq ft)</th>
+		<th>Status</th>
 		<th>Other notes</th>
 	</tr>
 
@@ -25,6 +26,7 @@
 		<td>{{property.nsp|yesno:"Yes,No"}}</td>
 		<td>{{property.quiet_title_complete|yesno:"Yes,No"}}</td>
 		<td>{{property.area}}</td>
+		<td>{{property.status}}</td>
 		<td>{{property.urban_garden|yesno:"Urban Garden,"}}</td>
 	</tr>
 	{% endfor %}
