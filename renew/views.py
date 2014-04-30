@@ -79,7 +79,7 @@ def search(request):
 		if 'returnType' in request.GET and request.GET['returnType']:
 			returnType = request.GET.__getitem__('returnType')
 			if returnType == "html":
-				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('parcel')	
+				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')	
 	 			propertiesTable = PropertyTable(properties, order_by='parcel')
 				return render(request, 'renew/table1_template.html', {'table': properties})
 			if returnType == "csv": 	
@@ -87,7 +87,7 @@ def search(request):
 				response['Content-Disposition'] = 'attachment; filename="renew-properties.csv"'
 				writer = csv.writer(response)
 				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Area ft^2", "Status", "Lat/Lon"])
-				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('parcel')				
+				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')				
 				for row in properties:
 					if row.nsp:
 						nspValue = "Yes"
