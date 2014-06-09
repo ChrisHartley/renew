@@ -107,7 +107,7 @@ def search(request):
 		properties = Property.objects.filter(reduce(operator.and_, queries))
 	except:
 		return HttpResponseBadRequest()
-	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel'])
+	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel', 'status', 'structureType'])
 	geoj = GeoJSON.GeoJSON()
 	s = geoj.encode(djf.decode(properties))
 	return HttpResponse(s)
