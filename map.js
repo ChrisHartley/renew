@@ -184,8 +184,11 @@ function getCSV(){
 	document.location.href = "/map/search/?returnType=csv&" + tmp;
 }
 
-function getSearchResults(data)  { 
-	searchResultsLayer.addFeatures(geojson_format.read(data));
+function getSearchResults(data)  {
+	if (data.length > 60){ // aprox length of geojson string with no features
+		searchResultsLayer.addFeatures(geojson_format.read(data));
+		map.zoomToExtent(searchResultsLayer.getDataExtent());
+	}
 }
 
 function clearSearchResults(){
