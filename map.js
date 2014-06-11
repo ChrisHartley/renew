@@ -36,14 +36,30 @@ function onPopupClose(evt) {
 function onFeatureSelect(feature) {
     selectedFeature = feature;
 	selectedLayer = feature.layer;
-	selectedLayer.drawFeature(feature, {fillColor: "#ffff00", strokeColor: "black"});
-    popup = new OpenLayers.Popup.FramedCloud("chicken", 
+	if (!feature.cluster) {
+		selectedLayer.drawFeature(feature, {fillColor: "#ffff00", strokeColor: "black"});
+    	popup = new OpenLayers.Popup.FramedCloud("chicken", 
                              feature.geometry.getBounds().getCenterLonLat(),
                              null,
                              "<div style='font-size:.8em'>Parcel: " + feature.attributes.parcel +"<br>Address: " + feature.attributes.streetAddress+"<br>Status: " +feature.attributes.status + "<br>Structure Type: "+ feature.attributes.structureType +"</div>",
                              null, true, onPopupClose);
+	} else {
+		var addresses ="";
+		for (var i=0; i < feature.cluster.length; i++){
+			addresses += feature.cluster[i].attributes.streetAddress + ", " + feature.cluster[i].attributes.parcel +"<br/>"; 
+
+		}
+
+		popup = new OpenLayers.Popup.FramedCloud("chicken", 
+                             feature.geometry.getBounds().getCenterLonLat(),
+                             null,
+                             "<div style='font-size:.8em'>Properties: " + addresses +"</div>",
+                             null, true, onPopupClose);
+	}
+		
     feature.popup = popup;
     map.addPopup(popup);
+	
 }
 
 function onFeatureUnselect(feature) {
@@ -175,6 +191,8 @@ function init(){
 		{onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
 	selectControl.activate(); 
+
+	map.events.register("zoomend", map, zoomChanged);
 
 }
 
