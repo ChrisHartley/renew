@@ -36,14 +36,15 @@ function onPopupClose(evt) {
 function onFeatureSelect(feature) {
     selectedFeature = feature;
 	selectedLayer = feature.layer;
+	// for regular features we show a nice popup with additional information
 	if (!feature.cluster) {
 		selectedLayer.drawFeature(feature, {fillColor: "#ffff00", strokeColor: "black"});
     	popup = new OpenLayers.Popup.FramedCloud("chicken", 
                              feature.geometry.getBounds().getCenterLonLat(),
                              null,
-                             "<div style='font-size:.8em'>Parcel: " + feature.attributes.parcel +"<br>Address: " + feature.attributes.streetAddress+"<br>Status: " +feature.attributes.status + "<br>Structure Type: "+ feature.attributes.structureType +"</div>",
+                             "<div style='font-size:.8em'>Parcel: " + feature.attributes.parcel +"<br>Address: " + feature.attributes.streetAddress+"<br>Status: " +feature.attributes.status + "<br>Structure Type: "+ feature.attributes.structureType + "<br>Structure Type: "+ feature.attributes.sidelot_eligible + "</div>",
                              null, true, onPopupClose);
-	} else {
+	} else { // for feature clusters we show a popup listing the properties contained within.
 		var addresses ="";
 		for (var i=0; i < feature.cluster.length; i++){
 			addresses += feature.cluster[i].attributes.streetAddress + ", " + feature.cluster[i].attributes.parcel +"<br/>"; 
@@ -74,6 +75,17 @@ function getSearchArea(){
 	}
 	catch(err){ return; }
 }
+
+function zoomChanged(){ // not working yet - how do we change opacity? it is a complete mystery of non-working.
+/*	if (map.getZoom() > 16){
+		console.log(map.getZoom())
+		searchResultsLayer.setOpacity(0.1);
+		lbLayer.setOpacity(0.1);	
+		searchResultsLayer.redraw();
+		lbLayer.redraw();
+	} */
+}
+
 
 
 function init(){
@@ -123,6 +135,7 @@ function init(){
 		label:"${label}",
 		fontColor: "#ffffff",
         fontOpacity: 0.8,
+		fillOpacity: 1,
         fontSize: "12px" 
 	}, {
 		context: {
@@ -135,7 +148,7 @@ function init(){
 
 	var surplusStyleMap = new OpenLayers.StyleMap({fillColor: '#A6CEE3', strokeWidth: '.05', strokeColor: 'black'});
 	lbStyleMap = new OpenLayers.StyleMap(lbStyle);
-	var searchResultStyleMap = new OpenLayers.StyleMap({fillColor: '#1F78B4', strokeWidth: '.05', strokeColor: 'black'});
+	var searchResultStyleMap = new OpenLayers.StyleMap({fillColor: '#1F78B4', strokeWidth: '.05', strokeColor: 'black', opacity: '0.9'});
 
 	// define vector layers
 	polygonLayer = new OpenLayers.Layer.Vector("Drawn Search Area"); // search by polygon layer
@@ -150,12 +163,6 @@ function init(){
 		})
 	});
 	
-	browserWarning.prototype.test = function(callback){
-		if(this.isOldBrowser()){
-			alert("here");
-		}
-	}
-
 	lbLayer = new OpenLayers.Layer.Vector("Landbank Properties", {
 		protocol: new OpenLayers.Protocol.HTTP({
 			url: "/map/search/?searchType=lb",
@@ -192,7 +199,7 @@ function init(){
 	map.addControl(selectControl);
 	selectControl.activate(); 
 
-	map.events.register("zoomend", map, zoomChanged);
+	map.events.register("zoomend", map, zoomChanged); // on close zoom increase layer transparency
 
 }
 
