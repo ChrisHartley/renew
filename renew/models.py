@@ -45,6 +45,7 @@ class Property(models.Model):
 	zipcode = models.ForeignKey(Zipcode, blank=True, null=True, help_text="The zipcode of the property")
 	urban_garden = models.BooleanField(default=False, help_text="If the property is currently licensed as an urban garden through the Office of Sustainability")
 	status = models.CharField(max_length=255, null=True, blank=True, help_text="The property's status with Renew Indianapolis")
+	sidelot_eligible = models.BooleanField(default=False, help_text="If the property is currently elgibile for the side-lot program")
 	area = models.FloatField(help_text="The parcel area in square feet")
 		
 	def __unicode__(self):
