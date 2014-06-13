@@ -42,7 +42,7 @@ function onFeatureSelect(feature) {
     	popup = new OpenLayers.Popup.FramedCloud("chicken", 
                              feature.geometry.getBounds().getCenterLonLat(),
                              null,
-                             "<div style='font-size:.8em'>Parcel: " + feature.attributes.parcel +"<br>Address: " + feature.attributes.streetAddress+"<br>Status: " +feature.attributes.status + "<br>Structure Type: "+ feature.attributes.structureType + "<br>Structure Type: "+ feature.attributes.sidelot_eligible + "</div>",
+                             "<div style='font-size:.8em'>Parcel: " + feature.attributes.parcel +"<br>Address: " + feature.attributes.streetAddress+"<br>Status: " +feature.attributes.status + "<br>Structure Type: "+ feature.attributes.structureType + "<br>Side lot Eligible: "+ feature.attributes.sidelot_eligible + "</div>",
                              null, true, onPopupClose);
 	} else { // for feature clusters we show a popup listing the properties contained within.
 		var addresses ="";
