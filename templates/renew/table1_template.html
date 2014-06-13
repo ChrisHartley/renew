@@ -12,8 +12,8 @@
 		<th>Area (sq ft)</th>
 		<th>Status</th>
 		<th>Other notes</th>
+		<th>Price</th>
 	</tr>
-
 {% load endless %}
 {% paginate 25 table %}
 	{% for property in table %}
@@ -30,6 +30,7 @@
 		<td>{{property.area}}</td>
 		<td>{{property.status}}</td>
 		<td>{{property.urban_garden|yesno:"Urban Garden,"}}</td>
+		<td>${{property.price}}</td>
 	</tr>
 	{% endfor %}
 	{% get_pages %}
