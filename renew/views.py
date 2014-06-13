@@ -68,6 +68,9 @@ def search(request):
 		if 'nsp' in request.GET and request.GET['nsp']:
 			nsp = request.GET.__getitem__('nsp')
 			queries.append(Q(nsp=nsp))
+		if 'sidelot_eligible' in request.GET and request.GET['sidelot_eligible']:
+			sidelot_eligible = request.GET.__getitem__('sidelot_eligible')
+			queries.append(Q(sidelot_eligible=sidelot_eligible))
 		if 'searchArea' in request.GET and request.GET['searchArea']:
 			searchArea = request.GET.__getitem__('searchArea')
 			try: 
@@ -86,7 +89,7 @@ def search(request):
 				response = HttpResponse(content_type='text/csv')
 				response['Content-Disposition'] = 'attachment; filename="renew-properties.csv"'
 				writer = csv.writer(response)
-				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Area ft^2", "Status", "Lat/Lon"])
+				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Area ft^2", "Status", "Lat/Lon"])
 				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')				
 				for row in properties:
 					if row.nsp:
@@ -101,13 +104,18 @@ def search(request):
 						qtValue = "Yes"
 					else:
 						qtValue = "No"
-					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, row.area, row.status, GEOSGeometry(row.geometry).centroid])
+					if row.sidelot_eligible:
+						slValue = "Yes"
+					else:
+						slValue = "No"
+
+					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, slValue, row.area, row.status, GEOSGeometry(row.geometry).centroid])
 				return response	
 	try:
 		properties = Property.objects.filter(reduce(operator.and_, queries))
 	except:
 		return HttpResponseBadRequest()
-	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel', 'status', 'structureType'])
+	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel', 'status', 'structureType', 'sidelot_eligible'])
 	geoj = GeoJSON.GeoJSON()
 	s = geoj.encode(djf.decode(properties))
 	return HttpResponse(s)
