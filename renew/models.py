@@ -47,6 +47,7 @@ class Property(models.Model):
 	status = models.CharField(max_length=255, null=True, blank=True, help_text="The property's status with Renew Indianapolis")
 	#sidelot_eligible = models.BooleanField(default=False, help_text="If the property is currently elgibile for the side-lot program")
 	sidelot_eligible = models.CharField(max_length=255, null=True, blank=True, help_text="If the property is currently elgibile for the side-lot program")
+	price = models.DecimalField(max_digits=8, decimal_places=2, help_text="The price of the property", null=True)
 	area = models.FloatField(help_text="The parcel area in square feet")
 		
 	def __unicode__(self):
