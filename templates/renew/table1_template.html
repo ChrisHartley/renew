@@ -30,7 +30,7 @@
 		<td>{{property.area}}</td>
 		<td>{{property.status}}</td>
 		<td>{{property.urban_garden|yesno:"Urban Garden,"}}</td>
-		<td>${{property.price}}</td>
+		<td>${{property.price|default_if_none:""}}</td>
 	</tr>
 	{% endfor %}
 	{% get_pages %}
