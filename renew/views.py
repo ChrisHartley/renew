@@ -22,6 +22,8 @@ from django.shortcuts import render
 from vectorformats.Formats import Django, GeoJSON    # used for geojson display of search results
 from renew.tables import PropertyTable # used for table display of search results
 import csv # used for csv return of search results
+import xlsxwriter # switching to XLSX
+import StringIO
 
 # to build query
 from django.db.models import Q
@@ -29,6 +31,7 @@ import operator
 
 from django.contrib.gis.geos import GEOSGeometry # used for centroid calculation
 
+ 
 
 @csrf_exempt
 def search(request):
@@ -112,6 +115,45 @@ def search(request):
 
 					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, row.area, row.status, row.price, GEOSGeometry(row.geometry).centroid])
 				return response	
+		
+#			if returnType == "xlsx":
+#				output = StringIO.StringIO()
+#				workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+#				worksheet = workbook.add_worksheet('Properties')
+#				bold = workbook.add_format({'bold': True})
+
+#				#writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Area ft^2", "Status", "Lat/Lon"])
+#				worksheet.write_row('A1',["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Area ft^2", "Status", "Price", "Lat/Lon"],bold)
+#				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')				
+#				rowNumber = 1
+#				for row in properties:
+#					if row.nsp:
+#						nspValue = "Yes"
+#					else:
+#						nspValue = "No"
+#					if row.urban_garden:
+#						ugValue = "Yes"
+#					else:
+#						ugValue = "No"
+#					if row.quiet_title_complete:
+#						qtValue = "Yes"
+#					else:
+#						qtValue = "No"
+#					if row.sidelot_eligible:
+#						slValue = "Yes"
+#					else:
+#						slValue = "No"
+
+#					#worksheet.write_row(rowNumber, 0, [row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, row.area, row.status, row.price, GEOSGeometry(row.geometry).centroid])
+#					worksheet.write_row(rowNumber, 0, [row.parcel, row.streetAddress, nspValue, ugValue, qtValue, row.area, row.status])
+#					print rowNumber
+#					rowNumber += 1
+#				workbook.close()
+#				output.seek(0)
+#				response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#				response['Content-Disposition'] = 'attachment; filename="renew-properties.xlsx"'
+#				return response	
+
 	try:
 		properties = Property.objects.filter(reduce(operator.and_, queries))
 	except:
@@ -141,4 +183,9 @@ def showMapAjax(request):
 	return render_to_response('renew/map-ajax.html', {
 		'form': form,
 	}, context_instance=RequestContext(request))
+
+def	showApplicationStatus(request):
+	properties = Property.objects.all().exclude(status__exact='Available').order_by('status')
+	propertiesTable = PropertyTable(properties, order_by='status')
+	return render(request, 'renew/app_status_template.html', {'table': properties})
 
