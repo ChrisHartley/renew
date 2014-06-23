@@ -1,0 +1,18 @@
+<table class="paleblue" style="table-layout:fixed">
+	<tr>
+		<th>Pacel Number</th>
+		<th>Street Address</th>
+		<th>Zipcode</th>
+		<th>Structure Type</th>
+		<th>Status</th>
+	</tr>
+	{% for property in table %}
+	<tr>
+		<td>{{property.parcel}}</td>
+		<td>{{property.streetAddress}}</td>
+		<td>{{property.zipcode}}</td>
+		<td>{{property.structureType}}</td>
+		<td>{{property.status}}</td>
+	</tr>
+	{% endfor %}
+</table>
