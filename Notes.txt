@@ -34,13 +34,24 @@ WHERE parcel IN (SELECT parcel
 #4 (new) insert into renew_property (parcel, "streetAddress", nsp, "structureType", area, geometry) (select lb_parcels.parcel, lb_parcels."streetAddress", null as nsp, '' as "structureType", ST_Area(ST_Transform(geom, 2965)) as area, geom from lb_parcels)
 
 #5.A update zipcode, cdc, zoning one at a time b/c some parcels are not in cdcs, etc
-update renew_property set zipcode_id = sq.id from (select renew_zipcode.id, renew_property.parcel from renew_zipcode, renew_property where ST_contains(renew_zipcode.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel
-update renew_property set zone_id = sq.id from (select renew_zoning.id, renew_property.parcel from renew_zoning, renew_property where ST_contains(renew_zoning.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel
-update renew_property set cdc_id = sq.id from (select renew_cdc.id, renew_property.parcel from renew_cdc, renew_property where ST_contains(renew_cdc.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel
+update renew_property set zipcode_id = sq.id from (select renew_zipcode.id, renew_property.parcel from renew_zipcode, renew_property where ST_contains(renew_zipcode.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel;
+update renew_property set zone_id = sq.id from (select renew_zoning.id, renew_property.parcel from renew_zoning, renew_property where ST_contains(renew_zoning.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel;
+update renew_property set cdc_id = sq.id from (select renew_cdc.id, renew_property.parcel from renew_cdc, renew_property where ST_contains(renew_cdc.geometry, renew_property.geometry)) as sq where renew_property.parcel = sq.parcel;
 
+Update data: 
+python manage.py dumpdata renew | gzip > renewdump.json.gz; scp renewdump.json.gz chris@renewindianapolis.org:/home/chris/public_html/renew
+python manage.py loaddata renew
 
 modules used
 pip install django-endless-pagination
 pip install django_tables
 
+### to add new properties 
+insert into renew_property (parcel, "streetAddress", nsp, "structureType", area, geometry, "propertyType") (select loading2.parcel, (trim(both from regexp_replace(coalesce(shapefile.stnumber,'') || ' ' || coalesce(shapefile.pre_dir,'') || ' ' ||  coalesce(shapefile.street_nam,'') || ' ' ||  coalesce(shapefile.suffix,'') || ' ' ||  coalesce(shapefile.suf_dir,''), '  ', ' '))) AS "streetAddress", loading2.nsp as nsp, loading2."structureType", round(ST_area(shapefile.geom), 2) as area, ST_transform(shapefile.geom, 4326) as geometry, 'lb' as "propertyType" from loading2 left join shapefile on parcel = parcel_c)
 
+## add from scratch
+insert into renew_property (parcel, "streetAddress", nsp, "structureType", area, geometry, "propertyType", quiet_title_complete, urban_garden) values ('9019489', '280 N HOLMES AV', 'f', 'None', '5130', '0106000020E61000000100000001030000000100000008000000C22100EB258D55C099AA778C94E24340F38534E7258D55C02836496D91E24340A9F9D7E6258D55C0DA13682191E24340AE03DABF2D8D55C0195F6C1291E2434044F52AC52D8D55C03CB9611291E24340578A54C92D8D55C08349717D94E24340FE0FFFC32D8D55C02CFA7B7D94E24340C22100EB258D55C099AA778C94E24340', 'lb', 'f', 'f')
+
+
+####
+Oddities: parcel "1036476" in master shapefile has two entries with different addresses and geometries. 
