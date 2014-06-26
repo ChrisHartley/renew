@@ -4,6 +4,7 @@
 		<th>Street Address</th>
 		<th>Zipcode</th>
 		<th>Structure Type</th>
+		<th>Applicant</th>
 		<th>Status</th>
 	</tr>
 	{% for property in table %}
@@ -12,6 +13,7 @@
 		<td>{{property.streetAddress}}</td>
 		<td>{{property.zipcode}}</td>
 		<td>{{property.structureType}}</td>
+		<td>{{property.applicant}}</td>
 		<td>{{property.status}}</td>
 	</tr>
 	{% endfor %}
