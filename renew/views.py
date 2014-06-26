@@ -185,14 +185,12 @@ def showMapAjax(request):
 	}, context_instance=RequestContext(request))
 
 def	showApplicationStatus(request):
-	properties = Property.objects.all().exclude(status__exact='Available').order_by('status')
+	properties = Property.objects.all().exclude(status__exact='Available').order_by('status').order_by('status', 'applicant')
 	if 'statusType' in request.GET and request.GET['statusType']:
 		statusType = request.GET.__getitem__('statusType')
 		if statusType == 'Sold':		
-			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sold').order_by('status')
+			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sold').order_by('applicant')
 		if statusType == 'Approved':
-			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sale').order_by('status')
-
-#	propertiesTable = PropertyTable(properties, order_by='status')
+			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sale').order_by('status', 'applicant')
 	return render(request, 'renew/app_status_template.html', {'table': properties})
 

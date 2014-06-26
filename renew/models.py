@@ -49,7 +49,9 @@ class Property(models.Model):
 	sidelot_eligible = models.CharField(max_length=255, null=True, blank=True, help_text="If the property is currently elgibile for the side-lot program")
 	price = models.DecimalField(max_digits=8, decimal_places=2, help_text="The price of the property", null=True)
 	area = models.FloatField(help_text="The parcel area in square feet")
-		
+	applicant = models.CharField(max_length=255, null=True, help_text="Name of current applicant for status page")
+
+	
 	def __unicode__(self):
 		return '%s' % (self.parcel)
 
