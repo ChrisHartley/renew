@@ -93,7 +93,7 @@ def search(request):
 				response['Content-Disposition'] = 'attachment; filename="renew-properties.csv"'
 				writer = csv.writer(response)
 				#writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Area ft^2", "Status", "Lat/Lon"])
-				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Area ft^2", "Status", "Price", "Lat/Lon"])
+				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Parcel Area ft^2", "Status", "Price", "Lat/Lon"])
 				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')				
 				for row in properties:
 					if row.nsp:
