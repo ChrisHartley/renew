@@ -175,7 +175,9 @@ function init(){
 		rendererOptions: { zIndexing: true }
 	});
 	map.addLayer(lbLayer);
+	map.addLayer(surplusLayer);
 	map.setLayerIndex(lbLayer, 1);
+	map.setLayerIndex(surplusLayer, 3);
 
 	//map.addLayer(stamenLayer);	
 	map.addLayer(OSMlayer);
@@ -194,7 +196,7 @@ function init(){
 	map.addControl(polyfeature);
 	
 
-	selectControl = new OpenLayers.Control.SelectFeature([lbLayer, searchResultsLayer],
+	selectControl = new OpenLayers.Control.SelectFeature([lbLayer, searchResultsLayer, surplusLayer],
 		{onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
 	selectControl.activate(); 
