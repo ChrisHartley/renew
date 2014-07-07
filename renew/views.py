@@ -92,8 +92,8 @@ def search(request):
 				response = HttpResponse(content_type='text/csv')
 				response['Content-Disposition'] = 'attachment; filename="renew-properties.csv"'
 				writer = csv.writer(response)
-				#writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Area ft^2", "Status", "Lat/Lon"])
-				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Parcel Area ft^2", "Status", "Price", "Lat/Lon"])
+				#writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Parcel Area ft^2", "Status", "Lat/Lon"])
+				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Parcel Area ft^2", "Status", "Price", "Lat/Lon"])
 				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')				
 				for row in properties:
 					if row.nsp:
@@ -113,7 +113,7 @@ def search(request):
 					else:
 						slValue = "No"
 
-					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, row.area, row.status, row.price, GEOSGeometry(row.geometry).centroid])
+					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, slValue, row.area, row.status, row.price, GEOSGeometry(row.geometry).centroid])
 				return response	
 		
 #			if returnType == "xlsx":
@@ -122,8 +122,8 @@ def search(request):
 #				worksheet = workbook.add_worksheet('Properties')
 #				bold = workbook.add_format({'bold': True})
 
-#				#writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Area ft^2", "Status", "Lat/Lon"])
-#				worksheet.write_row('A1',["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Area ft^2", "Status", "Price", "Lat/Lon"],bold)
+#				#writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Parcel Size ft^2", "Status", "Lat/Lon"])
+#				worksheet.write_row('A1',["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Parcel Size ft^2", "Status", "Price", "Lat/Lon"],bold)
 #				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')				
 #				rowNumber = 1
 #				for row in properties:
