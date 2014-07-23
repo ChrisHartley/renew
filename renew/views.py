@@ -84,9 +84,11 @@ def search(request):
 				queries.append(Q(geometry__within=searchGeometry))
 		if 'returnType' in request.GET and request.GET['returnType']:
 			returnType = request.GET.__getitem__('returnType')
-			if returnType == "html":
-				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')	
-	 			propertiesTable = PropertyTable(properties, order_by='parcel')
+			try:
+				properties = Property.objects.filter(reduce(operator.and_, queries))
+			except:
+				pass
+			if returnType == "html":				
 				return render(request, 'renew/table1_template.html', {'table': properties})
 			if returnType == "csv": 	
 				response = HttpResponse(content_type='text/csv')
@@ -94,7 +96,6 @@ def search(request):
 				writer = csv.writer(response)
 				#writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Parcel Area ft^2", "Status", "Lat/Lon"])
 				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Parcel Area ft^2", "Status", "Price", "Lat/Lon"])
-				properties = Property.objects.filter(reduce(operator.and_, queries)).order_by('zipcode')				
 				for row in properties:
 					if row.nsp:
 						nspValue = "Yes"
@@ -154,10 +155,6 @@ def search(request):
 #				response['Content-Disposition'] = 'attachment; filename="renew-properties.xlsx"'
 #				return response	
 
-	try:
-		properties = Property.objects.filter(reduce(operator.and_, queries))
-	except:
-		return HttpResponseBadRequest()
 	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel', 'status', 'structureType', 'sidelot_eligible', 'price'])
 	geoj = GeoJSON.GeoJSON()
 	s = geoj.encode(djf.decode(properties))
