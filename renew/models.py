@@ -50,6 +50,7 @@ class Property(models.Model):
 	price = models.DecimalField(max_digits=8, decimal_places=2, help_text="The price of the property", null=True)
 	area = models.FloatField(help_text="The parcel area in square feet")
 	applicant = models.CharField(max_length=255, null=True, help_text="Name of current applicant for status page")
+	homestead_only = models.BooleanField(default=False, help_text="Only available for homestead applications")
 
 	
 	def __unicode__(self):

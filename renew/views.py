@@ -30,7 +30,7 @@ from django.db.models import Q
 import operator
 
 from django.contrib.gis.geos import GEOSGeometry # used for centroid calculation
-
+import json
  
 
 @csrf_exempt
@@ -74,6 +74,9 @@ def search(request):
 		if 'sidelot_eligible' in request.GET and request.GET['sidelot_eligible']:
 			sidelot_eligible = request.GET.__getitem__('sidelot_eligible')
 			queries.append(Q(sidelot_eligible=sidelot_eligible))
+		if 'homestead_only' in request.GET and request.GET['homestead_only']:
+			homestead_only = request.GET.__getitem__('homestead_only')
+			queries.append(Q(homestead_only=homestead_only))
 		if 'searchArea' in request.GET and request.GET['searchArea']:
 			searchArea = request.GET.__getitem__('searchArea')
 			try: 
@@ -87,15 +90,14 @@ def search(request):
 			try:
 				properties = Property.objects.filter(reduce(operator.and_, queries))
 			except:
-				pass
+				pass # search engines keep sending malformed queries with no search criteria so we want to just return everything in that case
 			if returnType == "html":				
 				return render(request, 'renew/table1_template.html', {'table': properties})
 			if returnType == "csv": 	
 				response = HttpResponse(content_type='text/csv')
 				response['Content-Disposition'] = 'attachment; filename="renew-properties.csv"'
 				writer = csv.writer(response)
-				#writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Parcel Area ft^2", "Status", "Lat/Lon"])
-				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Parcel Area ft^2", "Status", "Price", "Lat/Lon"])
+				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Homestead Only", "Parcel Area ft^2", "Status", "Price", "Lat/Lon"])
 				for row in properties:
 					if row.nsp:
 						nspValue = "Yes"
@@ -113,8 +115,12 @@ def search(request):
 						slValue = "Yes"
 					else:
 						slValue = "No"
+					if row.homestead_only:
+						hstdValue = "Yes"
+					else:
+						hstdValue = "No"
 
-					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, slValue, row.area, row.status, row.price, GEOSGeometry(row.geometry).centroid])
+					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, slValue, hstdValue, row.area, row.status, row.price, GEOSGeometry(row.geometry).centroid])
 				return response	
 		
 #			if returnType == "xlsx":
@@ -155,7 +161,7 @@ def search(request):
 #				response['Content-Disposition'] = 'attachment; filename="renew-properties.xlsx"'
 #				return response	
 
-	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel', 'status', 'structureType', 'sidelot_eligible', 'price'])
+	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel', 'status', 'structureType', 'sidelot_eligible', 'homestead_only', 'price'])
 	geoj = GeoJSON.GeoJSON()
 	s = geoj.encode(djf.decode(properties))
 	return HttpResponse(s)
@@ -191,3 +197,29 @@ def	showApplicationStatus(request):
 			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sale').order_by('status', 'applicant')
 	return render(request, 'renew/app_status_template.html', {'table': properties})
 
+
+def getAddressFromParcel(request):
+	response_data = {}
+	if 'parcel' in request.GET and request.GET['parcel']:
+		parcelNumber = request.GET.__getitem__('parcel')
+		try:
+			SearchResult = Property.objects.get(parcel__exact=parcelNumber)
+		except Property.DoesNotExist:
+			return HttpResponse("No such parcel in our inventory", content_type="text/plain")
+		response_data['streetAddress'] = SearchResult.streetAddress
+		response_data['structureType'] = SearchResult.structureType
+		return HttpResponse(json.dumps(response_data), content_type="application/json")
+	if 'streetAddress' in request.GET and request.GET['streetAddress']:
+		streetAddress = request.GET.__getitem__('streetAddress')
+		try:
+			SearchResult = Property.objects.get(streetAddress__iexact=streetAddress)
+		except Property.DoesNotExist:
+			return HttpResponse("No such address in our inventory", content_type="text/plain") 
+		return HttpResponse(SearchResult.parcel)
+	return HttpResponse("Please submit a search term")
+
+def showPropertyInquiry(request):
+	form = SearchForm()
+	return render_to_response('renew/property_inquiry.html', {
+		'form': form,
+	}, context_instance=RequestContext(request))
