@@ -161,6 +161,10 @@ def search(request):
 #				response['Content-Disposition'] = 'attachment; filename="renew-properties.xlsx"'
 #				return response	
 
+	try:
+		properties = Property.objects.filter(reduce(operator.and_, queries))
+	except:
+		pass
 	djf = Django.Django(geodjango='geometry', properties=['streetAddress', 'parcel', 'status', 'structureType', 'sidelot_eligible', 'homestead_only', 'price'])
 	geoj = GeoJSON.GeoJSON()
 	s = geoj.encode(djf.decode(properties))
