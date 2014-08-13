@@ -110,10 +110,10 @@ function init(){
 	ls.maximizeControl();
 
 	// set up basemaps
-	//stamenLayer = new OpenLayers.Layer.Stamen("toner", {attribution: stamenAttribution});
-	//stamenLayer.setName('Stamen Toner');
-	//stamenTerrainLayer = new OpenLayers.Layer.Stamen('terrain', {attribution: stamenAttribution});
-	//stamenTerrainLayer.setName('Stamen Terrain');
+	stamenLayer = new OpenLayers.Layer.Stamen("toner", {attribution: stamenAttribution});
+	stamenLayer.setName('Stamen Toner');
+	stamenTerrainLayer = new OpenLayers.Layer.Stamen('terrain', {attribution: stamenAttribution});
+	stamenTerrainLayer.setName('Stamen Terrain');
     OSMlayer = new OpenLayers.Layer.OSM();
 	gmap = new OpenLayers.Layer.Google(
 		"Google Streets", 
@@ -179,12 +179,12 @@ function init(){
 	map.setLayerIndex(lbLayer, 1);
 	map.setLayerIndex(surplusLayer, 3);
 
-	//map.addLayer(stamenLayer);	
+	map.addLayer(stamenLayer);	
 	map.addLayer(OSMlayer);
 	map.addLayer(gmap);
 	map.addLayer(ghyb);
 	map.addLayer(polygonLayer);
-    //map.addLayer(stamenTerrainLayer);
+    map.addLayer(stamenTerrainLayer);
 
 	map.addLayer(searchResultsLayer);
 	map.setLayerIndex(searchResultsLayer, 2);
@@ -214,6 +214,7 @@ function getCSV(){
 function getSearchResults(data)  {
 	if (data.length > 60){ // aprox length of geojson string with no features
 		searchResultsLayer.addFeatures(geojson_format.read(data));
+		console.log("Post search extent: " + searchResultsLayer.getDataExtent());
 		map.zoomToExtent(searchResultsLayer.getDataExtent());
 	}
 }
@@ -278,6 +279,7 @@ $(function(){
 	var options = {		
 		beforeSerialize: function(){
 			getSearchArea();
+			console.log("Pre search extent: " + searchResultsLayer.getDataExtent());
 		},		
 		dataType: 'html', // because it makes it a json javascript object if you chose json
 		success: getSearchResults
