@@ -196,7 +196,7 @@ function init(){
 	map.addControl(polyfeature);
 	
 
-	selectControl = new OpenLayers.Control.SelectFeature([lbLayer, searchResultsLayer, surplusLayer],
+	selectControl = new OpenLayers.Control.SelectFeature([lbLayer, searchResultsLayer],
 		{onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
 	selectControl.activate(); 
