@@ -154,14 +154,14 @@ function init(){
 	polygonLayer = new OpenLayers.Layer.Vector("Drawn Search Area"); // search by polygon layer
 	searchResultsLayer = new OpenLayers.Layer.Vector("Search Results", {styleMap: searchResultStyleMap, rendererOptions: { zIndexing: true }});
 
-	surplusLayer = new OpenLayers.Layer.Vector("Surplus Properties", {
-		strategies: [new OpenLayers.Strategy.Fixed()],
-		styleMap: surplusStyleMap,
-		protocol: new OpenLayers.Protocol.HTTP({
-			url: "/map/search/?searchType=sp",
-			format: new OpenLayers.Format.GeoJSON()
-		})
-	});
+//	surplusLayer = new OpenLayers.Layer.Vector("Surplus Properties", {
+//		strategies: [new OpenLayers.Strategy.Fixed()],
+//		styleMap: surplusStyleMap,
+//		protocol: new OpenLayers.Protocol.HTTP({
+//			url: "/map/search/?searchType=sp",
+//			format: new OpenLayers.Format.GeoJSON()
+//		})
+//	});
 	
 	lbLayer = new OpenLayers.Layer.Vector("Landbank Properties", {
 		protocol: new OpenLayers.Protocol.HTTP({
@@ -175,9 +175,9 @@ function init(){
 		rendererOptions: { zIndexing: true }
 	});
 	map.addLayer(lbLayer);
-	map.addLayer(surplusLayer);
+//	map.addLayer(surplusLayer);
 	map.setLayerIndex(lbLayer, 1);
-	map.setLayerIndex(surplusLayer, 3);
+//	map.setLayerIndex(surplusLayer, 3);
 
 	map.addLayer(stamenLayer);	
 	map.addLayer(OSMlayer);
