@@ -76,7 +76,7 @@ $('#id_parcel').change(function(){
 		{
 			var $form = $("#propertyInquiryForm"), 
 				term = $form.find( "input[name='parcel']" ).val(),
-				url = "/lookup_street_address/"
+				url = "/map/lookup_street_address/"
 
 			var posting = $.get( url, { parcel: term } );
  
