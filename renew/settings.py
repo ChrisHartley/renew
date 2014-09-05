@@ -140,8 +140,11 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
 	'endless_pagination',
     'django.contrib.gis',
-    'renew'
+    'renew',
+	'crispy_forms'
 )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

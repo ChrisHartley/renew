@@ -56,5 +56,11 @@ class Property(models.Model):
 	def __unicode__(self):
 		return '%s' % (self.parcel)
 
-
+class propertyInquiry(models.Model):
+	parcel = models.CharField(max_length=7, blank=False, null=False)
+	applicant_name = models.CharField(max_length=255, blank=False, null=False)
+	applicant_email_address = models.CharField(max_length=255, blank=False, null=False)
+	applicant_address = models.CharField(max_length=255, blank=False, null=False)
+	applicant_phone = models.CharField(max_length=20, blank=False, null=False)
+	timestamp = models.DateTimeField(auto_now_add=True)
 

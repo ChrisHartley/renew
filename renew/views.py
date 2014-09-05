@@ -4,6 +4,7 @@ from renew.models import Zipcode
 from renew.models import Zoning
 from renew.models import CDC
 from renew.forms import SearchForm
+from renew.forms import PropertyInquiryForm
 
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
@@ -31,6 +32,7 @@ import operator
 
 from django.contrib.gis.geos import GEOSGeometry # used for centroid calculation
 import json
+from django.core import serializers
  
 
 @csrf_exempt
@@ -222,8 +224,28 @@ def getAddressFromParcel(request):
 		return HttpResponse(SearchResult.parcel)
 	return HttpResponse("Please submit a search term")
 
+def getMatchingAddresses(request):
+#	response_data = {}
+	if 'street_name' in request.GET and request.GET['street_name']:
+		street_name = request.GET.__getitem__('street_name')
+		try:
+			SearchResult = Property.objects.filter(streetAddress__icontains=street_name)
+		except Property.DoesNotExist:
+			return HttpResponse("No such properties in our inventory", content_type="text/plain")
+
+		response_data = serializers.serialize('json', SearchResult, fields=('parcel','streetAddress'))
+		return HttpResponse(response_data, content_type="application/json")
+	return HttpResponse("Please submit a search term")
+
 def showPropertyInquiry(request):
-	form = SearchForm()
+	form = PropertyInquiryForm(request.POST or None)
+	success = False
+	if request.method == 'POST':
+		form = PropertyInquiryForm(request.POST)
+		if form.is_valid():
+			form.save()
+			success = True
 	return render_to_response('renew/property_inquiry.html', {
 		'form': form,
+		'success': success
 	}, context_instance=RequestContext(request))
