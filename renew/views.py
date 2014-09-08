@@ -239,13 +239,13 @@ def getMatchingAddresses(request):
 
 def showPropertyInquiry(request):
 	form = PropertyInquiryForm(request.POST or None)
-	success = False
+	parcelNumber = False
 	if request.method == 'POST':
 		form = PropertyInquiryForm(request.POST)
 		if form.is_valid():
 			form.save()
-			success = True
+			parcelNumber = request.POST['parcel']
 	return render_to_response('renew/property_inquiry.html', {
 		'form': form,
-		'success': success
+		'parcel': parcelNumber
 	}, context_instance=RequestContext(request))

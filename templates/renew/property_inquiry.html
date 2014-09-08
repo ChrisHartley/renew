@@ -24,8 +24,8 @@
 	Please submit one form entry for each property you would like to see. We will forward your request to a representative from the city who will contact you to set up a time to visit the property. You should expect to hear from them within 5 business days.
 </div>
 <div class="row">&nbsp</div>
-{% if success %}
-<div id="success" class="alert alert-success" role="alert">Your property inquiry was successfully submitted. If you like you may submit another but we ask that you limit yourself to 2-3 at any one time.</div>
+{% if parcel %}
+<div id="success" class="alert alert-success" role="alert">Your property inquiry for parcel # {{ parcel }} was successfully submitted. If you like you may submit another but we ask that you limit yourself to 2-3 at any one time.</div>
 {%endif%}
 <div class="row">
 
@@ -119,7 +119,7 @@ $("#options").change(function(){
 	$("#propertyInquiryForm").find("input[name='parcel']").change();
 });
 
-// bind to "Look up Properties" button in case someone pastes in and then clicks
+// bind to "Search by street name" button in case someone pastes in and then clicks
 $("#streetLookup").bind("click", function(){
 	$('#street_name').keyup();
 });
