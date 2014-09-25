@@ -7,6 +7,8 @@
 		<th>Applicant</th>
 		<th>Status</th>
 	</tr>
+{% load endless %}
+{% paginate 50 table %}
 	{% for property in table %}
 	<tr>
 		<td>{{property.parcel}}</td>
@@ -17,4 +19,10 @@
 		<td>{{property.status}}</td>
 	</tr>
 	{% endfor %}
+	{% get_pages %}
+Showing entries
+{{ pages.current_start_index }}-{{ pages.current_end_index }} of
+{{ pages.total_count }}.
+{# Just print pages to render the Digg-style pagination. #}
+{{ pages }}
 </table>

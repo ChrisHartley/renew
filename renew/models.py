@@ -56,11 +56,65 @@ class Property(models.Model):
 	def __unicode__(self):
 		return '%s' % (self.parcel)
 
+
+
 class propertyInquiry(models.Model):
 	parcel = models.CharField(max_length=7, blank=False, null=False)
 	applicant_name = models.CharField(max_length=255, blank=False, null=False)
-	applicant_email_address = models.CharField(max_length=255, blank=False, null=False)
-	applicant_address = models.CharField(max_length=255, blank=False, null=False)
-	applicant_phone = models.CharField(max_length=20, blank=False, null=False)
+	applicant_email_address = models.EmailField(blank=False, null=False)
+	
+	applicant_phone = models.CharField(max_length=15, blank=False, null=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
+
+
+
+def content_file_name(instance, filename):
+	return '/'.join(['applications', instance.Applicant, instance.Property.streetAddress, filename])
+
+
+	
+class Application(models.Model):
+
+	Applicant = models.EmailField()
+
+	created = models.DateTimeField(auto_now_add=True)
+	modified = models.DateTimeField(auto_now=True)
+
+	APPLICATION_TYPES = ( ('hms', 'Homestead'), ('std', 'Standard') ) 
+	STATUS_TYPES = ( ('w', 'Withdrawn'), ('h', 'On Hold'), ('a', 'Active'), ('c', 'Complete') ) 
+
+#	Applicant = models.ForeignKey(User)
+
+
+	application_type = models.CharField(choices=APPLICATION_TYPES, max_length=3, verbose_name='application type', help_text="If you will live in this property as your primary residence chose Homestead, otherwise chose Standard")
+
+	Property = models.ForeignKey('Property') # pull from renew_property
+	is_rental = models.CharField(max_length=255, help_text="Will this property be a rental or owner occupied?", null=False, blank=False)
+	planned_improvements = models.TextField(max_length=5120, help_text="Describe the improvements you plan to make to the property", null=False, blank=False) 
+	long_term_ownership = models.CharField(max_length=255, help_text="Who will own the property long-term?", null=False, blank=False)
+	team_members = models.TextField(max_length=5120, help_text="What contractors, property managers, construction managers, or others will be part of this work? What experience do they have?", null=False, blank=False)
+	estimated_cost = models.PositiveIntegerField(blank=False)
+	source_of_financing = models.TextField(max_length=5120, help_text="What sources of financing will you use?", blank=False)
+	grant_funds = models.TextField(max_length=5120, help_text="List grants you plan to utilize. Note whether they are committed, applied for, or planned.", blank=False)
+	scope_of_work = models.FileField(upload_to=content_file_name) # pdf
+	proof_of_funds = models.FileField(upload_to='proof_of_funds/%Y/%m/%d') # pdf or jpg, png attachment 
+	neighborhood_notification = models.FileField(upload_to=property(content_file_name)) # pdf
+	timeline = models.TextField(max_length=5120, help_text="Tell us your anticipated timeline for this project", blank=False)
+
+	hearing_rc	= models.DateField(help_text="When was the application heard by the Review Committee?", blank=True, null=True)
+	hearing_bd	= models.DateField(help_text="When was the application heard by the Board of Directors?", blank=True, null=True)
+	hearing_dmd = models.DateField(help_text="When was the application heard by the Department of Metropolitan Development?", blank=True, null=True)
+	hearing_mdc = models.DateField(help_text="When was the application heard by Metropolitan Development Commission?", blank=True, null=True)	
+
+	decision_rc = models.NullBooleanField(help_text="Approved by Review Committee?", blank=True)
+	decision_bd = models.NullBooleanField(help_text="Approved by Board of Directors?", blank=True)
+	decision_dmd = models.NullBooleanField(help_text="Approved by Department of Metropolitan Development?", blank=True)
+	decision_mdc = models.NullBooleanField(help_text="Approved by Metropolitan Development Commission?", blank=True)
+
+	sold = models.BooleanField(help_text="Has the property been sold by Renew Indianapolis?", null=False, default=False)
+	status = models.CharField(max_length=1, choices=STATUS_TYPES, help_text="What is the internal status of this application?", null=True) 
+	created_timestamp = models.DateTimeField(auto_now_add=True)
+	staff_recommendation = models.CharField(max_length=255, help_text="Staff recommendation to Review Comittee", null=True)
+	staff_summary = models.TextField(max_length=5120, help_text="Staff summary of application for Review Committee", null=True)
+	staff_pof_total = models.IntegerField(help_text="Total funds demonstrated", null=True)
 

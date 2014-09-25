@@ -9,7 +9,9 @@ from renew.models import Zipcode
 from renew.models import CDC
 from renew.models import Zoning
 from renew.models import propertyInquiry
+from renew.models import Application
 
+from django.core.exceptions import ValidationError
 
 class SearchForm(ModelForm):
 	zipcode =  forms.ModelMultipleChoiceField(queryset=Zipcode.objects.all().order_by('name'), widget=forms.SelectMultiple, help_text="The 5 digit zipcode.", label='Zipcode')
@@ -29,7 +31,7 @@ class SearchForm(ModelForm):
 class PropertyInquiryForm(ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(PropertyInquiryForm, self).__init__(*args, **kwargs)
-		self.fields.keyOrder = ['applicant_name','applicant_email_address','applicant_address','applicant_phone','parcel']
+		self.fields.keyOrder = ['applicant_name','applicant_email_address','applicant_phone','parcel']
 		self.helper = FormHelper()
 		self.helper.form_id = 'propertyInquiryForm'
 		self.helper.form_class = 'form-horizontal'
@@ -41,3 +43,41 @@ class PropertyInquiryForm(ModelForm):
 
 	class Meta:
 		model = propertyInquiry
+
+
+class ApplicationForm(ModelForm):
+	def validate_parcel(value):
+		try:
+			Property.objects.get(parcel=value)
+		except Property.DoesNotExist:
+			raise ValidationError("The parcel you entered does not exist in our inventory.")
+
+	def __init__(self, *args, **kwargs):
+		super(ApplicationForm, self).__init__(*args, **kwargs)
+		#self.fields.keyOrder = ['Applicant','applicant_email_address','applicant_address','applicant_phone','parcel']
+		self.helper = FormHelper()
+		self.helper.form_id = 'ApplicationForm'
+		self.helper.form_class = 'form-horizontal'
+		self.helper.label_class = 'col-lg-3'
+		self.helper.field_class = 'col-lg-5'
+		self.helper.form_method = 'post'
+		self.helper.form_action = ''
+		self.helper.add_input(Submit('submit', 'Submit'))
+
+	Parcel = forms.CharField(max_length=7, validators=[validate_parcel])
+
+
+	class Meta:
+		model = Application
+		exclude = ("Property",)
+		fields = ['Applicant','Parcel','scope_of_work','neighborhood_notification','is_rental','application_type','planned_improvements','long_term_ownership','team_members','timeline','estimated_cost','source_of_financing','grant_funds',]
+		widgets = {
+            'hearing_rc': forms.DateInput(attrs={'class':'datepicker'}),
+            'hearing_bd': forms.DateInput(attrs={'class':'datepicker'}),
+            'hearing_dmd': forms.DateInput(attrs={'class':'datepicker'}),
+            'hearing_mdc': forms.DateInput(attrs={'class':'datepicker'}),
+
+        }
+
+
+

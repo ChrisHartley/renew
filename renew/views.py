@@ -5,6 +5,7 @@ from renew.models import Zoning
 from renew.models import CDC
 from renew.forms import SearchForm
 from renew.forms import PropertyInquiryForm
+from renew.forms import ApplicationForm
 
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
@@ -19,6 +20,8 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404 
+
 
 from vectorformats.Formats import Django, GeoJSON    # used for geojson display of search results
 from renew.tables import PropertyTable # used for table display of search results
@@ -173,11 +176,13 @@ def search(request):
 	return HttpResponse(s)
 
 
+
 def search_form(request):
 	form = SearchForm()
 	return render_to_response('renew/search-form.html', {
 		'form': form,
 	}, context_instance=RequestContext(request))
+
 
 
 def showMap(request):
@@ -187,11 +192,14 @@ def showMap(request):
 	}, context_instance=RequestContext(request))
 
 
+
 def showMapAjax(request):
 	form = SearchForm()
 	return render_to_response('renew/map-ajax.html', {
 		'form': form,
 	}, context_instance=RequestContext(request))
+
+
 
 def	showApplicationStatus(request):
 	properties = Property.objects.all().exclude(status__exact='Available').order_by('status').order_by('status', 'applicant')
@@ -204,6 +212,7 @@ def	showApplicationStatus(request):
 	return render(request, 'renew/app_status_template.html', {'table': properties})
 
 
+
 def getAddressFromParcel(request):
 	response_data = {}
 	if 'parcel' in request.GET and request.GET['parcel']:
@@ -214,6 +223,7 @@ def getAddressFromParcel(request):
 			return HttpResponse("No such parcel in our inventory", content_type="text/plain")
 		response_data['streetAddress'] = SearchResult.streetAddress
 		response_data['structureType'] = SearchResult.structureType
+		response_data['status'] = SearchResult.status
 		return HttpResponse(json.dumps(response_data), content_type="application/json")
 	if 'streetAddress' in request.GET and request.GET['streetAddress']:
 		streetAddress = request.GET.__getitem__('streetAddress')
@@ -224,6 +234,8 @@ def getAddressFromParcel(request):
 		return HttpResponse(SearchResult.parcel)
 	return HttpResponse("Please submit a search term")
 
+
+# Given a street name, return a json object with all the properties in inventory 
 def getMatchingAddresses(request):
 #	response_data = {}
 	if 'street_name' in request.GET and request.GET['street_name']:
@@ -237,6 +249,8 @@ def getMatchingAddresses(request):
 		return HttpResponse(response_data, content_type="application/json")
 	return HttpResponse("Please submit a search term")
 
+
+# Displays form template for property inquiry submissions, and saves those submissions
 def showPropertyInquiry(request):
 	form = PropertyInquiryForm(request.POST or None)
 	parcelNumber = False
@@ -249,3 +263,23 @@ def showPropertyInquiry(request):
 		'form': form,
 		'parcel': parcelNumber
 	}, context_instance=RequestContext(request))
+
+
+
+def showApplicationForm(request):
+	form = ApplicationForm(request.POST or None)
+	if request.method == 'POST':
+		form = ApplicationForm(request.POST, request.FILES)
+		try:
+			selected_property = Property.objects.get(parcel=request.POST['Parcel'])
+		except Property.DoesNotExist:
+			selected_property = None
+		if form.is_valid():
+			form_saved = form.save(commit=False)			# this is necessary so we can set the Property based on the parcel number inputed
+			form_saved.Property = selected_property
+			form_saved.save()
+	return render_to_response('renew/application-template.html', {
+		'form': form,
+	}, context_instance=RequestContext(request))
+
+
