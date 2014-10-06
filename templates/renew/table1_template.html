@@ -29,7 +29,7 @@
 		<td>{{property.sidelot_eligible|yesno:"Yes,No"}}</td>
 		<td>{{property.area}}</td>
 		<td>{{property.status}}</td>
-		<td>{{property.urban_garden|yesno:"Urban Garden,"}} {{property.homestead_only|yesno:"Homestead only,"}}</td>
+		<td>{{property.urban_garden|yesno:"Urban Garden,"}} {{property.homestead_only|yesno:"Homestead only,"}} {{property.bep_demolition|yesno:"BEP demolition proposed,"}}</td>
 		<td>${{property.price|default_if_none:""|floatformat:"0"}}{% if property.sidelot_eligible %}/$750{% endif %}</td>
 	</tr>
 	{% endfor %}

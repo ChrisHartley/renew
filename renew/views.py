@@ -82,6 +82,9 @@ def search(request):
 		if 'homestead_only' in request.GET and request.GET['homestead_only']:
 			homestead_only = request.GET.__getitem__('homestead_only')
 			queries.append(Q(homestead_only=homestead_only))
+		if 'bep_demolition' in request.GET and request.GET['bep_demolition']:
+			bep_demolition = request.GET.__getitem__('bep_demolition')
+			queries.append(Q(bep_demolition=bep_demolition))
 		if 'searchArea' in request.GET and request.GET['searchArea']:
 			searchArea = request.GET.__getitem__('searchArea')
 			try: 
@@ -102,7 +105,7 @@ def search(request):
 				response = HttpResponse(content_type='text/csv')
 				response['Content-Disposition'] = 'attachment; filename="renew-properties.csv"'
 				writer = csv.writer(response)
-				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Homestead Only", "Parcel Area ft^2", "Status", "Price", "Lat/Lon"])
+				writer.writerow(["Parcel Number", "Street Address", "Zipcode", "Structure Type", "CDC", "Zoned", "NSP", "Licensed Urban Garden", "Quiet Title", "Sidelot Eligible", "Homestead Only", "BEP Demolition Slated", "Parcel Area ft^2", "Status", "Price", "Lat/Lon"])
 				for row in properties:
 					if row.nsp:
 						nspValue = "Yes"
@@ -124,8 +127,12 @@ def search(request):
 						hstdValue = "Yes"
 					else:
 						hstdValue = "No"
+					if row.bep_demolition:
+						bepDemolition = "Yes"
+					else:
+						bepDemolition = "No"
 
-					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, slValue, hstdValue, row.area, row.status, row.price, GEOSGeometry(row.geometry).centroid])
+					writer.writerow([row.parcel, row.streetAddress, row.zipcode, row.structureType, row.cdc, row.zone, nspValue, ugValue, qtValue, slValue, hstdValue, bepDemolition, row.area, row.status, row.price, GEOSGeometry(row.geometry).centroid])
 				return response	
 		
 #			if returnType == "xlsx":
