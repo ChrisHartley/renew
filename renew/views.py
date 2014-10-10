@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 
 from django.contrib.gis.geos import GEOSGeometry
-
+from django.core.mail import send_mail
 
 #shotgun approach
 from django.http import HttpResponseRedirect
@@ -21,7 +21,6 @@ from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404 
-
 
 from vectorformats.Formats import Django, GeoJSON    # used for geojson display of search results
 from renew.tables import PropertyTable # used for table display of search results
@@ -265,7 +264,13 @@ def showPropertyInquiry(request):
 		form = PropertyInquiryForm(request.POST)
 		if form.is_valid():
 			form.save()
-			parcelNumber = request.POST['parcel']
+#			parcelNumber = request.POST['parcel']
+			parcelNumber = form.cleaned_data['parcel']
+			message_body = 'Applicant: ' + form.cleaned_data['applicant_name'] + '\n' + 'Parcel: ' + form.cleaned_data['parcel']
+#'applicant_name','applicant_email_address','applicant_phone','parcel
+
+			send_mail('New Property Inquiry', message_body, 'chris.hartley@renewindianapolis.org',
+    ['chris.hartley@renewindianapolis.org'], fail_silently=False)
 	return render_to_response('renew/property_inquiry.html', {
 		'form': form,
 		'parcel': parcelNumber
