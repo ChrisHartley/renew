@@ -267,8 +267,6 @@ def showPropertyInquiry(request):
 #			parcelNumber = request.POST['parcel']
 			parcelNumber = form.cleaned_data['parcel']
 			message_body = 'Applicant: ' + form.cleaned_data['applicant_name'] + '\n' + 'Parcel: ' + form.cleaned_data['parcel']
-#'applicant_name','applicant_email_address','applicant_phone','parcel
-
 			send_mail('New Property Inquiry', message_body, 'chris.hartley@renewindianapolis.org',
     ['chris.hartley@renewindianapolis.org'], fail_silently=False)
 	return render_to_response('renew/property_inquiry.html', {
