@@ -8,6 +8,22 @@ ul {
 }
 
 
+.cdc {
+	/* essential */
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+
+	/* for good looks */
+	padding: 10px;
+}
+
+.cdc:hover {
+	overflow: visible;
+	white-space: normal;
+
+}
+
 .formLabel { 
 	float:left;
 	text-align:left; 
