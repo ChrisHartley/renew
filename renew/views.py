@@ -264,7 +264,6 @@ def showPropertyInquiry(request):
 		form = PropertyInquiryForm(request.POST)
 		if form.is_valid():
 			form.save()
-#			parcelNumber = request.POST['parcel']
 			parcelNumber = form.cleaned_data['parcel']
 			message_body = 'Applicant: ' + form.cleaned_data['applicant_name'] + '\n' + 'Parcel: ' + form.cleaned_data['parcel']
 			send_mail('New Property Inquiry', message_body, 'chris.hartley@renewindianapolis.org',
