@@ -7,15 +7,16 @@ ul {
 	margin-bottom: 20px !important;
 }
 
+/* Property search page intro popup box */
+intro {
+	font-size: 80%;
+}
 
+/* Property search results table formatting*/
 .cdc {
-	/* essential */
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
-
-	/* for good looks */
-	padding: 10px;
 }
 
 .cdc:hover {
@@ -27,6 +28,8 @@ ul {
 	padding: 10px;
 	font-size: 80%;
 }
+
+/* end property search results table formatting */
 
 .formLabel { 
 	float:left;
