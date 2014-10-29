@@ -21,7 +21,10 @@ ul {
 .cdc:hover {
 	overflow: visible;
 	white-space: normal;
+}
 
+.paleblue td {
+	padding: 10px;
 }
 
 .formLabel { 
