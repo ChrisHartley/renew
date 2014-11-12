@@ -265,7 +265,8 @@ def showPropertyInquiry(request):
 		if form.is_valid():
 			form.save()
 			parcelNumber = form.cleaned_data['parcel']
-			message_body = 'Applicant: ' + form.cleaned_data['applicant_name'] + '\n' + 'Parcel: ' + form.cleaned_data['parcel']
+			ChosenProperty = Property.objects.get(parcel__iexact=parcelNumber)
+			message_body = 'Applicant: ' + form.cleaned_data['applicant_name'] + '\n' + 'Parcel: ' + form.cleaned_data['parcel'] + '\nAddress: ' + ChosenProperty.streetAddress + '\nStatus: ' + ChosenProperty.status
 			send_mail('New Property Inquiry', message_body, 'chris.hartley@renewindianapolis.org',
     ['chris.hartley@renewindianapolis.org'], fail_silently=False)
 	return render_to_response('renew/property_inquiry.html', {
