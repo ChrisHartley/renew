@@ -225,7 +225,7 @@ def	showApplicationStatus(request):
 		if statusType == 'Approved':
 			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sale').order_by('status', 'applicant')
 	table = PropertyStatusTable(properties)
-	RequestConfig(request).configure(table)	
+	RequestConfig(request, paginate=False).configure(table)	
 	return render(request, 'renew/app_status_template.html', {'table': table})
 	#return render(request, 'renew/app_status_template.html', {'table': properties})
 
