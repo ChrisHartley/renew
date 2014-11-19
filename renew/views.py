@@ -1,17 +1,23 @@
 from django.template import Context, loader
 from renew.models import Property
+from renew.models import propertyInquiry
 from renew.models import Zipcode
 from renew.models import Zoning
 from renew.models import CDC
 from renew.forms import SearchForm
 from renew.forms import PropertyInquiryForm
 from renew.forms import ApplicationForm
+from renew.tables import PropertyTable # used for table display of search results
+from renew.tables import PropertyStatusTable
+
 
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 
 from django.contrib.gis.geos import GEOSGeometry
 from django.core.mail import send_mail
+
+from django_tables2   import RequestConfig
 
 #shotgun approach
 from django.http import HttpResponseRedirect
@@ -23,7 +29,6 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404 
 
 from vectorformats.Formats import Django, GeoJSON    # used for geojson display of search results
-from renew.tables import PropertyTable # used for table display of search results
 import csv # used for csv return of search results
 import xlsxwriter # switching to XLSX
 import StringIO
@@ -35,7 +40,11 @@ import operator
 from django.contrib.gis.geos import GEOSGeometry # used for centroid calculation
 import json
 from django.core import serializers
- 
+
+# login requirements 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 
 @csrf_exempt
 def search(request):
@@ -215,7 +224,10 @@ def	showApplicationStatus(request):
 			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sold').order_by('applicant')
 		if statusType == 'Approved':
 			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sale').order_by('status', 'applicant')
-	return render(request, 'renew/app_status_template.html', {'table': properties})
+	table = PropertyStatusTable(properties)
+	RequestConfig(request).configure(table)	
+	return render(request, 'renew/app_status_template.html', {'table': table})
+	#return render(request, 'renew/app_status_template.html', {'table': properties})
 
 
 
@@ -274,6 +286,15 @@ def showPropertyInquiry(request):
 		'parcel': parcelNumber
 	}, context_instance=RequestContext(request))
 
+
+# show all property inquiries
+
+@method_decorator(login_required)
+def propertyInquries(request):
+		propertyInquries = propertyInquiry.objects.all().order_by('timestamp')
+		return render_to_response('renew/property_inquiry_admin.html', {
+			'propertyInquiries': propertyInquries
+		}, context_instance=RequestContext(request))
 
 
 def showApplicationForm(request):

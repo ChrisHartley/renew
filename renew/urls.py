@@ -16,6 +16,7 @@ urlpatterns = patterns('',
 	url(r'property_inquiry/$', 'renew.views.showPropertyInquiry'),
 	url(r'lookup_possible_street_addresses/$', 'renew.views.getMatchingAddresses'),
 	url(r'application/$', 'renew.views.showApplicationForm'),
+	url(r'admin-property-inquiry/$', 'renew.views.propertyInquries'),
 
    # Uncomment the next line to enable the admin:
    # url(r'^admin/', include(admin.site.urls)),

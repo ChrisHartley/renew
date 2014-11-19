@@ -1,4 +1,6 @@
 import django_tables as tables
+import django_tables2 as tables2
+from renew.models import Property
 
 class PropertyTable(tables.MemoryTable):
 		parcel = tables.Column(verbose_name="Parcel Number")
@@ -9,3 +11,7 @@ class PropertyTable(tables.MemoryTable):
 		cdc = tables.Column(verbose_name="CDC")
 		zone = tables.Column(verbose_name="Zoned")
 
+class PropertyStatusTable(tables2.Table):
+	class Meta:
+		model = Property
+		fields = ("parcel", "streetAddress", "zipcode", "structureType", "applicant", "status", )

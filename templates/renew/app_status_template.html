@@ -1,3 +1,6 @@
+{% load render_table from django_tables2 %}
+{% render_table table %}
+{% comment %}
 <table class="paleblue" style="table-layout:fixed">
 	<tr>
 		<th>Pacel Number</th>
@@ -26,3 +29,4 @@ Showing entries
 {# Just print pages to render the Digg-style pagination. #}
 {{ pages }}
 </table>
+{% endcomment %}
