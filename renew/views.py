@@ -17,7 +17,7 @@ from django.http import HttpResponseBadRequest
 from django.contrib.gis.geos import GEOSGeometry
 from django.core.mail import send_mail
 
-from django_tables2   import RequestConfig
+#from django_tables2   import RequestConfig
 
 #shotgun approach
 from django.http import HttpResponseRedirect
@@ -45,6 +45,7 @@ from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
+from django_tables2_reports.config import RequestConfigReport as RequestConfig
 
 @csrf_exempt
 def search(request):

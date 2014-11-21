@@ -1,5 +1,9 @@
 import django_tables as tables
 import django_tables2 as tables2
+
+from django_tables2_reports.tables import TableReport
+
+
 from renew.models import Property
 
 class PropertyTable(tables.MemoryTable):
@@ -11,7 +15,8 @@ class PropertyTable(tables.MemoryTable):
 		cdc = tables.Column(verbose_name="CDC")
 		zone = tables.Column(verbose_name="Zoned")
 
-class PropertyStatusTable(tables2.Table):
+#class PropertyStatusTable(tables2.Table):
+class PropertyStatusTable(TableReport):
 	class Meta:
 		model = Property
 		attrs = {"class": "paleblue"}
