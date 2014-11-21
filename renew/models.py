@@ -56,6 +56,8 @@ class Property(models.Model):
 	homestead_only = models.BooleanField(default=False, help_text="Only available for homestead applications")
 	bep_demolition = models.BooleanField(default=False, help_text="Slated for demolition under the Blight Elimination Program")
 
+	class Meta:
+		verbose_name_plural = "properties"
 	
 	def __unicode__(self):
 		return '%s' % (self.parcel)
