@@ -225,10 +225,20 @@ def	showApplicationStatus(request):
 		if statusType == 'Approved':
 			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sale').order_by('status', 'applicant')
 	table = PropertyStatusTable(properties)
-	RequestConfig(request, paginate=False).configure(table)	
+	RequestConfig(request, paginate=False).configure(table)
 	return render(request, 'renew/app_status_template.html', {'table': table})
 	#return render(request, 'renew/app_status_template.html', {'table': properties})
 
+
+def	showApplications(request):
+	config = RequestConfig(request)
+	soldProperties = Property.objects.all().filter(status__exact='Sold').order_by('status', 'applicant')
+	approvedProperties = Property.objects.all().filter(status__istartswith='Sale').order_by('status', 'applicant')
+	soldTable = PropertyStatusTable(soldProperties, prefix="1-")
+	approvedTable = PropertyStatusTable(approvedProperties, prefix="2-")
+	config.configure(soldTable)
+	config.configure(approvedTable)
+	return render(request, 'renew/app_status_template.html', {'soldTable': soldTable, 'approvedTable': approvedTable})
 
 
 def getAddressFromParcel(request):

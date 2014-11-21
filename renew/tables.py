@@ -14,4 +14,5 @@ class PropertyTable(tables.MemoryTable):
 class PropertyStatusTable(tables2.Table):
 	class Meta:
 		model = Property
+		attrs = {"class": "paleblue"}
 		fields = ("parcel", "streetAddress", "zipcode", "structureType", "applicant", "status", )

@@ -1,32 +1,12 @@
+{% extends 'renew/wp-template.html' %}
+{% block wpwrap %}
 {% load render_table from django_tables2 %}
-{% render_table table %}
-{% comment %}
-<table class="paleblue" style="table-layout:fixed">
-	<tr>
-		<th>Pacel Number</th>
-		<th>Street Address</th>
-		<th>Zipcode</th>
-		<th>Structure Type</th>
-		<th>Applicant</th>
-		<th>Status</th>
-	</tr>
-{% load endless %}
-{% paginate 50 table %}
-	{% for property in table %}
-	<tr>
-		<td>{{property.parcel}}</td>
-		<td>{{property.streetAddress}}</td>
-		<td>{{property.zipcode}}</td>
-		<td>{{property.structureType}}</td>
-		<td>{{property.applicant}}</td>
-		<td>{{property.status}}</td>
-	</tr>
-	{% endfor %}
-	{% get_pages %}
-Showing entries
-{{ pages.current_start_index }}-{{ pages.current_end_index }} of
-{{ pages.total_count }}.
-{# Just print pages to render the Digg-style pagination. #}
-{{ pages }}
-</table>
-{% endcomment %}
+<h1 class="page-header-title">applications &amp; sale activity</h1>
+<br/>The following applications have been completed and are being reviewed by Renew Indianapolis and the Metropolitan Development Commission:
+{% render_table approvedTable %}
+<br/>	
+The following sales have completed:
+{% render_table soldTable %}
+
+{% endblock %}
+
