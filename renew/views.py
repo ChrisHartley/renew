@@ -215,21 +215,6 @@ def showMapAjax(request):
 	}, context_instance=RequestContext(request))
 
 
-
-def	showApplicationStatus(request):
-	properties = Property.objects.all().exclude(status__exact='Available').order_by('status').order_by('status', 'applicant')
-	if 'statusType' in request.GET and request.GET['statusType']:
-		statusType = request.GET.__getitem__('statusType')
-		if statusType == 'Sold':		
-			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sold').order_by('applicant')
-		if statusType == 'Approved':
-			properties = Property.objects.all().exclude(status__exact='Available').filter(status__istartswith='Sale').order_by('status', 'applicant')
-	table = PropertyStatusTable(properties)
-	RequestConfig(request, paginate=False).configure(table)
-	return render(request, 'renew/app_status_template.html', {'table': table})
-	#return render(request, 'renew/app_status_template.html', {'table': properties})
-
-
 def	showApplications(request):
 	config = RequestConfig(request)
 	soldProperties = Property.objects.all().filter(status__exact='Sold').order_by('status', 'applicant')
@@ -238,7 +223,7 @@ def	showApplications(request):
 	approvedTable = PropertyStatusTable(approvedProperties, prefix="2-")
 	config.configure(soldTable)
 	config.configure(approvedTable)
-	return render(request, 'renew/app_status_template.html', {'soldTable': soldTable, 'approvedTable': approvedTable})
+	return render(request, 'renew/app_status_template.html', {'soldTable': soldTable, 'approvedTable': approvedTable, 'title': 'applications & sale activity'})
 
 
 def getAddressFromParcel(request):
@@ -298,7 +283,6 @@ def showPropertyInquiry(request):
 
 
 # show all property inquiries
-
 @method_decorator(login_required)
 def propertyInquries(request):
 		propertyInquries = propertyInquiry.objects.all().order_by('timestamp')
