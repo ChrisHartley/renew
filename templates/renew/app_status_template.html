@@ -1,11 +1,10 @@
 {% extends 'renew/wp-template.html' %}
 {% block wpwrap %}
 {% load render_table from django_tables2 %}
-<h1 class="page-header-title">applications &amp; sale activity</h1>
-<br/><br/>The following applications have been completed and are being reviewed by Renew Indianapolis and the Metropolitan Development Commission:
+The following applications have been completed and are being reviewed by Renew Indianapolis and the Metropolitan Development Commission:<br/>
 {% render_table approvedTable %}
 <br/><br/>	
-The following sales have been completed:
+The following sales have been completed:<br/>
 {% render_table soldTable %}
 
 {% endblock %}
