@@ -19,6 +19,13 @@ class Overlay(models.Model):
 	class Meta:
 		abstract = True
 
+class Neighborhood_Association(Overlay):
+	contact_first_name = models.CharField(max_length=255)
+	contact_last_name = models.CharField(max_length=255)
+	contact_phone = models.CharField(max_length=255)
+	contact_email_address = models.CharField(max_length=255)
+	last_updated = models.DateField()
+
 class Zipcode(Overlay):
 	pass
 
@@ -70,7 +77,9 @@ class propertyInquiry(models.Model):
 	applicant_email_address = models.EmailField(blank=False, null=False)
 	applicant_phone = models.CharField(max_length=15, blank=False, null=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
-	
+	Property = models.ForeignKey(Property, blank=True, null=True)
+
+
 	def clean(self):
 		try: 
 			structureType = Property.objects.get(parcel=self.parcel).structureType
@@ -81,6 +90,9 @@ class propertyInquiry(models.Model):
 			raise ValidationError('Our records show this is a vacant lot and so you can not submit a property inquiry. If our data are incorrect, please email us at chris.hartley@renewindianapolis.org so we can correct our data and set up a showing.')
 		if (status == 'Sold' or 'Sale approved by MDC' in status):
 			raise ValidationError('This parcel has been sold or is approved for sale and is no longer available from Renew Indianapolis.')	
+	
+	class Meta:
+		verbose_name_plural = "property inquiries"
 		
 
 def content_file_name(instance, filename):
